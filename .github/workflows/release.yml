@@ -14,11 +14,6 @@ on:
   push:
     tags:
       - 'v*'
-    # NOTE: temporary dry-run channel; remove before squash-merge into
-    # development. workflow_dispatch cannot target a non-default-branch
-    # workflow file, so we use a branch-push trigger to iterate.
-    branches:
-      - feature/release-pipeline
   workflow_dispatch:
 
 permissions:
