@@ -111,10 +111,17 @@ jobs:
 
       - name: Configure S32K148
         working-directory: openbsw
+        env:
+          # Required by openbsw/cmake/toolchains/ArmNoneEabi-gcc.cmake.
+          CC: /opt/arm-gnu-toolchain/bin/arm-none-eabi-gcc
+          CXX: /opt/arm-gnu-toolchain/bin/arm-none-eabi-g++
         run: cmake --preset s32k148-freertos-gcc
 
       - name: Build S32K148 (RelWithDebInfo)
         working-directory: openbsw
+        env:
+          CC: /opt/arm-gnu-toolchain/bin/arm-none-eabi-gcc
+          CXX: /opt/arm-gnu-toolchain/bin/arm-none-eabi-g++
         run: cmake --build --preset s32k148-freertos-gcc --config RelWithDebInfo
 
       - name: Locate built ELF
