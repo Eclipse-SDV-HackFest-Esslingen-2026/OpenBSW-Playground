@@ -1,10 +1,12 @@
-[submodule "OpenBSW-SOVD-Demo/real-sovd-cda/classic-diagnostic-adapter"]
-	path = OpenBSW-SOVD-Demo/real-sovd-cda/classic-diagnostic-adapter
-	url = https://github.com/eclipse-opensovd/classic-diagnostic-adapter.git
-[submodule "OpenBSW-SOVD-Demo/real-sovd-cda/odx-converter"]
-	path = OpenBSW-SOVD-Demo/real-sovd-cda/odx-converter
-	url = https://github.com/eclipse-opensovd/odx-converter.git
 [submodule "openbsw"]
 	path = openbsw
 	url = https://github.com/eclipse-openbsw/openbsw.git
+	branch = main
+[submodule "OpenBSW-SOVD-Demo/real-sovd-cda/classic-diagnostic-adapter"]
+	path = OpenBSW-SOVD-Demo/real-sovd-cda/classic-diagnostic-adapter
+	url = https://github.com/eclipse-opensovd/classic-diagnostic-adapter.git
+	branch = main
+[submodule "OpenBSW-SOVD-Demo/real-sovd-cda/odx-converter"]
+	path = OpenBSW-SOVD-Demo/real-sovd-cda/odx-converter
+	url = https://github.com/eclipse-opensovd/odx-converter.git
 	branch = main
