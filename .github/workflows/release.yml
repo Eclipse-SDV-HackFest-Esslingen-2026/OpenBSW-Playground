@@ -325,14 +325,31 @@ jobs:
       - name: Start ECU process
         run: |
           set -e
+          # The ECU runs an embedded lwIP TCP/IP stack over TAP; its port
+          # 13400 listener is on 192.168.0.201 (lwIP), NOT on the host
+          # kernel's loopback / TAP-host side. Probe via TCP connect to
+          # the ECU's TAP-side IP instead of `ss -tlnp`.
           nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
             < /dev/null > /tmp/ecu.log 2>&1 &
           echo $! > /tmp/ecu.pid
+          ready=0
           for i in $(seq 1 90); do
-            if ss -tlnp | grep -q ':13400'; then break; fi
+            if (echo > /dev/tcp/192.168.0.201/13400) >/dev/null 2>&1; then
+              ready=1; break
+            fi
+            # Bail out early if the process died.
+            if ! kill -0 "$(cat /tmp/ecu.pid)" 2>/dev/null; then
+              echo "ECU process exited unexpectedly"
+              break
+            fi
             sleep 1
           done
-          ss -tlnp | grep ':13400' || (cat /tmp/ecu.log && exit 1)
+          if [ "$ready" != "1" ]; then
+            echo "ECU did not open DoIP port 13400 within 90s"
+            tail -100 /tmp/ecu.log
+            exit 1
+          fi
+          echo "ECU DoIP port 13400 reachable on 192.168.0.201"
 
       - name: Run ECU integration tests
         run: pytest tests/ecu/ -v --tb=short --timeout=30 --junitxml=test-results/ecu.xml
