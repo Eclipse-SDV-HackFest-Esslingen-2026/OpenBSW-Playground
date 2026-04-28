@@ -1,0 +1,290 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  unit-tests:
+    name: Unit Tests (Tier 1)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: pip install -r tests/requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/unit/ -v --tb=short --junitxml=test-results/unit.xml --cov=tests --cov-report=term-missing --cov-report=xml:test-results/coverage.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: test-results/
+
+  ecu-integration:
+    name: ECU Integration Tests (Tier 2)
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ iproute2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: pip install -r tests/requirements.txt
+
+      - name: Build ECU binary
+        working-directory: OpenBSW-SOVD-Demo
+        run: |
+          cmake --preset posix-freertos-sovd
+          cmake --build build/posix-freertos-sovd --config Debug
+
+      - name: Setup TAP network interface
+        run: |
+          sudo ip tuntap add dev tap0 mode tap user $(id -u)
+          sudo ip link set tap0 up
+          sudo ip address add 192.168.0.10/24 dev tap0
+          ip addr show tap0
+
+      - name: Start ECU process
+        run: |
+          nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
+            < /dev/null > /tmp/ecu.log 2>&1 &
+          echo $! > /tmp/ecu.pid
+          for i in $(seq 1 30); do
+            if ss -tlnp | grep -q ':13400'; then break; fi
+            sleep 1
+          done
+          ss -tlnp | grep ':13400' || (echo "ECU failed to start:" && cat /tmp/ecu.log && exit 1)
+
+      - name: Run ECU integration tests
+        run: pytest tests/ecu/ -v --tb=short --timeout=30 --junitxml=test-results/ecu.xml
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          echo "=== ECU Log ===" && cat /tmp/ecu.log || true
+
+      - name: Stop ECU and cleanup
+        if: always()
+        run: |
+          kill $(cat /tmp/ecu.pid 2>/dev/null) 2>/dev/null || true
+          sudo ip link delete tap0 2>/dev/null || true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ecu-test-results
+          path: test-results/
+
+  sovd-integration:
+    name: SOVD API Tests (Tier 3)
+    runs-on: ubuntu-latest
+    needs: ecu-integration
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ iproute2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test and CDA dependencies
+        run: |
+          pip install -r tests/requirements.txt
+          pip install -r OpenBSW-SOVD-Demo/sovd-cda/requirements.txt
+
+      - name: Build ECU binary
+        working-directory: OpenBSW-SOVD-Demo
+        run: |
+          cmake --preset posix-freertos-sovd
+          cmake --build build/posix-freertos-sovd --config Debug
+
+      - name: Setup TAP network interface
+        run: |
+          sudo ip tuntap add dev tap0 mode tap user $(id -u)
+          sudo ip link set tap0 up
+          sudo ip address add 192.168.0.10/24 dev tap0
+
+      - name: Start ECU process
+        run: |
+          nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
+            < /dev/null > /tmp/ecu.log 2>&1 &
+          echo $! > /tmp/ecu.pid
+          for i in $(seq 1 30); do
+            if ss -tlnp | grep -q ':13400'; then break; fi
+            sleep 1
+          done
+          ss -tlnp | grep ':13400' || (cat /tmp/ecu.log && exit 1)
+
+      - name: Start Stub CDA
+        run: |
+          cd OpenBSW-SOVD-Demo/sovd-cda
+          nohup python3 -m uvicorn main:app --host 0.0.0.0 --port 8080 \
+            --log-level warning > /tmp/cda.log 2>&1 &
+          echo $! > /tmp/cda.pid
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8080/health > /dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          curl -sf http://localhost:8080/health || (cat /tmp/cda.log && exit 1)
+
+      - name: Run SOVD API tests
+        run: pytest tests/sovd/ -v --tb=short --timeout=30 --junitxml=test-results/sovd.xml
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          echo "=== ECU Log ===" && cat /tmp/ecu.log || true
+          echo "=== CDA Log ===" && cat /tmp/cda.log || true
+
+      - name: Stop processes and cleanup
+        if: always()
+        run: |
+          kill $(cat /tmp/cda.pid 2>/dev/null) 2>/dev/null || true
+          kill $(cat /tmp/ecu.pid 2>/dev/null) 2>/dev/null || true
+          sudo ip link delete tap0 2>/dev/null || true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sovd-test-results
+          path: test-results/
+
+  grafana-visual:
+    name: Grafana Visual Tests (Tier 4)
+    runs-on: ubuntu-latest
+    needs: sovd-integration
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ iproute2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements.txt
+          pip install -r OpenBSW-SOVD-Demo/sovd-cda/requirements.txt
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Build ECU binary
+        working-directory: OpenBSW-SOVD-Demo
+        run: |
+          cmake --preset posix-freertos-sovd
+          cmake --build build/posix-freertos-sovd --config Debug
+
+      - name: Setup TAP network interface
+        run: |
+          sudo ip tuntap add dev tap0 mode tap user $(id -u)
+          sudo ip link set tap0 up
+          sudo ip address add 192.168.0.10/24 dev tap0
+
+      - name: Start ECU process
+        run: |
+          nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
+            < /dev/null > /tmp/ecu.log 2>&1 &
+          echo $! > /tmp/ecu.pid
+          for i in $(seq 1 30); do
+            if ss -tlnp | grep -q ':13400'; then break; fi
+            sleep 1
+          done
+          ss -tlnp | grep ':13400' || (cat /tmp/ecu.log && exit 1)
+
+      - name: Start Stub CDA
+        run: |
+          cd OpenBSW-SOVD-Demo/sovd-cda
+          nohup python3 -m uvicorn main:app --host 0.0.0.0 --port 8080 \
+            --log-level warning > /tmp/cda.log 2>&1 &
+          echo $! > /tmp/cda.pid
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8080/health > /dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          curl -sf http://localhost:8080/health || (cat /tmp/cda.log && exit 1)
+
+      - name: Start Grafana via Docker Compose
+        working-directory: OpenBSW-SOVD-Demo
+        run: |
+          docker compose --profile stub-cda up -d grafana
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/api/health > /dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl -sf http://localhost:3000/api/health || (docker compose logs grafana && exit 1)
+
+      - name: Run Grafana visual tests
+        run: pytest tests/grafana/ -v --tb=short --timeout=60 --junitxml=test-results/grafana.xml
+        env:
+          GRAFANA_URL: http://localhost:3000
+
+      - name: Collect logs and screenshots on failure
+        if: failure()
+        run: |
+          echo "=== ECU Log ===" && cat /tmp/ecu.log || true
+          echo "=== CDA Log ===" && cat /tmp/cda.log || true
+          echo "=== Grafana Logs ===" && docker compose -f OpenBSW-SOVD-Demo/docker-compose.yaml logs grafana || true
+
+      - name: Stop processes and cleanup
+        if: always()
+        run: |
+          docker compose -f OpenBSW-SOVD-Demo/docker-compose.yaml down || true
+          kill $(cat /tmp/cda.pid 2>/dev/null) 2>/dev/null || true
+          kill $(cat /tmp/ecu.pid 2>/dev/null) 2>/dev/null || true
+          sudo ip link delete tap0 2>/dev/null || true
+
+      - name: Upload test results and screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: grafana-test-results
+          path: |
+            test-results/grafana.xml
+            test-results/screenshots/

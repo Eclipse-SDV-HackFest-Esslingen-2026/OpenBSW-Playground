@@ -1,0 +1,35 @@
+name: Build SOVD Demo
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  build-ecu:
+    name: Build ECU (POSIX-FreeRTOS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ 
+
+      - name: Configure CMake
+        working-directory: OpenBSW-SOVD-Demo
+        run: cmake --preset posix-freertos-sovd
+
+      - name: Build
+        working-directory: OpenBSW-SOVD-Demo
+        run: cmake --build build/posix-freertos-sovd --config Debug
+
+      - name: Verify binary exists
+        run: |
+          test -f OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf
+          echo "Build successful: app.sovdDemo.elf produced"

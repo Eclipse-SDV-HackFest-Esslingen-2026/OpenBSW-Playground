@@ -1,0 +1,278 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "title": "",
+      "type": "text",
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"text-align:center;padding:4px 0\"><h2 style=\"margin:0;color:#5CE0D8\">🚗 OpenBSW Vehicle Diagnostics — Real SOVD Dashboard</h2><span style=\"color:#aaa\">Live data via Eclipse OpenSOVD CDA → DoIP/UDS → OpenBSW ECU</span></div>"
+      }
+    },
+    {
+      "title": "Engine Temperature",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 2 },
+      "id": 3,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://host.docker.internal:8080/vehicle/v15/components/openbsw/data/EngineTemp",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
+            ]
+          },
+          "format": "table",
+          "root_selector": "data",
+          "columns": [
+            { "selector": "EngineTemp", "text": "value", "type": "number" }
+          ]
+        }
+      ],
+      "transformations": [],
+      "fieldConfig": {
+        "defaults": {
+          "min": 50,
+          "max": 150,
+          "unit": "celsius",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 70 },
+              { "color": "yellow", "value": 100 },
+              { "color": "orange", "value": 115 },
+              { "color": "red", "value": 125 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      }
+    },
+    {
+      "title": "Battery Voltage",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 2 },
+      "id": 4,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://host.docker.internal:8080/vehicle/v15/components/openbsw/data/BatteryVoltage",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
+            ]
+          },
+          "format": "table",
+          "root_selector": "data",
+          "columns": [
+            { "selector": "BatteryVoltage", "text": "value", "type": "number" }
+          ]
+        }
+      ],
+      "transformations": [],
+      "fieldConfig": {
+        "defaults": {
+          "min": 50,
+          "max": 200,
+          "unit": "none",
+          "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 80 },
+              { "color": "green", "value": 100 },
+              { "color": "green", "value": 140 },
+              { "color": "red", "value": 160 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      }
+    },
+    {
+      "title": "Vehicle Speed",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 2 },
+      "id": 5,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://host.docker.internal:8080/vehicle/v15/components/openbsw/data/VehicleSpeed",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
+            ]
+          },
+          "format": "table",
+          "root_selector": "data",
+          "columns": [
+            { "selector": "VehicleSpeed", "text": "value", "type": "number" }
+          ]
+        }
+      ],
+      "transformations": [],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 240,
+          "unit": "velocitykmh",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 120 },
+              { "color": "orange", "value": 160 },
+              { "color": "red", "value": 200 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      }
+    },
+    {
+      "title": "🔴 DTC Status Board",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 10 },
+      "id": 6,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://host.docker.internal:8080/vehicle/v15/components/openbsw/faults",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
+            ]
+          },
+          "format": "table",
+          "root_selector": "items",
+          "columns": [
+            { "selector": "display_code", "text": "Code", "type": "string" },
+            { "selector": "fault_name", "text": "Description", "type": "string" },
+            { "selector": "status.test_failed", "text": "Active", "type": "string" },
+            { "selector": "status.confirmed_dtc", "text": "Confirmed", "type": "string" },
+            { "selector": "status.mask", "text": "Status", "type": "string" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "auto", "displayMode": "auto", "filterable": true }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Active" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-background-solid" },
+              { "id": "mappings", "value": [{ "type": "value", "options": { "true": { "text": "⚠ ACTIVE", "color": "red" }, "false": { "text": "OK", "color": "green" } } }] },
+              { "id": "custom.width", "value": 90 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Confirmed" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-background-solid" },
+              { "id": "mappings", "value": [{ "type": "value", "options": { "true": { "text": "YES", "color": "orange" }, "false": { "text": "NO", "color": "green" } } }] },
+              { "id": "custom.width", "value": 80 }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Active", "desc": true }],
+        "footer": { "show": false }
+      }
+    },
+    {
+      "title": "SOVD API Health",
+      "type": "stat",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 10 },
+      "id": 10,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://host.docker.internal:8080/health",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "components",
+          "columns": [
+            { "selector": "name", "text": "Component", "type": "string" },
+            { "selector": "status", "text": "Status", "type": "string" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "mappings": [{ "type": "value", "options": { "Up": { "text": "✅ UP", "color": "green" }, "Down": { "text": "❌ DOWN", "color": "red" } } }]
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^Status$/" },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "horizontal"
+      }
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["openbsw", "sovd", "doip", "hackathon"],
+  "templating": { "list": [] },
+  "time": { "from": "now-5m", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "OpenBSW Vehicle Diagnostics",
+  "uid": "openbsw-sovd-demo",
+  "version": 2
+}

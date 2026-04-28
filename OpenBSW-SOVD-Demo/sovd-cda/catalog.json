@@ -1,0 +1,95 @@
+{
+    "components": {
+        "openbsw-ecu": {
+            "name": "OpenBSW Reference ECU",
+            "description": "POSIX reference application running DoIP/UDS",
+            "doip": {
+                "host": "192.168.0.201",
+                "port": 13400,
+                "ecu_logical_address": "0x002A",
+                "client_logical_address": "0x0EF1",
+                "protocol_version": 2
+            },
+            "dtcs": {
+                "0x010100": {
+                    "name": "P0100",
+                    "description": "Engine Coolant Temperature Sensor Circuit - Over Temperature",
+                    "severity": "high",
+                    "system": "Powertrain"
+                },
+                "0x010200": {
+                    "name": "P0200",
+                    "description": "Battery Voltage Low",
+                    "severity": "medium",
+                    "system": "Electrical"
+                },
+                "0x010300": {
+                    "name": "P0300",
+                    "description": "CAN/Ethernet Communication Fault",
+                    "severity": "high",
+                    "system": "Communication"
+                },
+                "0x010400": {
+                    "name": "P0400",
+                    "description": "Sensor Malfunction - General",
+                    "severity": "low",
+                    "system": "Sensors"
+                },
+                "0x010500": {
+                    "name": "C0500",
+                    "description": "Brake System Fault",
+                    "severity": "critical",
+                    "system": "Chassis"
+                }
+            },
+            "dids": {
+                "0xCF01": {
+                    "name": "StaticData",
+                    "description": "Static identifier data from memory",
+                    "access": "read",
+                    "format": "raw"
+                },
+                "0xCF02": {
+                    "name": "ADC_Value",
+                    "description": "Analog-to-digital converter potentiometer value",
+                    "access": "read",
+                    "format": "uint16",
+                    "unit": "raw"
+                },
+                "0xCF03": {
+                    "name": "WritableData",
+                    "description": "Writable data identifier",
+                    "access": "readwrite",
+                    "format": "raw"
+                },
+                "0xCF10": {
+                    "name": "EngineTemp",
+                    "description": "Simulated engine coolant temperature",
+                    "access": "read",
+                    "format": "int32",
+                    "unit": "°C",
+                    "min": 60,
+                    "max": 140
+                },
+                "0xCF11": {
+                    "name": "BatteryVoltage",
+                    "description": "Simulated battery voltage (x100)",
+                    "access": "read",
+                    "format": "int32",
+                    "unit": "V/100",
+                    "min": 900,
+                    "max": 1500
+                },
+                "0xCF12": {
+                    "name": "VehicleSpeed",
+                    "description": "Simulated vehicle speed",
+                    "access": "read",
+                    "format": "int32",
+                    "unit": "km/h",
+                    "min": 0,
+                    "max": 220
+                }
+            }
+        }
+    }
+}
