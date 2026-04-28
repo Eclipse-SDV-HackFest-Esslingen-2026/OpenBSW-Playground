@@ -7,3 +7,4 @@
 [submodule "openbsw"]
 	path = openbsw
 	url = https://github.com/eclipse-openbsw/openbsw.git
+	branch = main
