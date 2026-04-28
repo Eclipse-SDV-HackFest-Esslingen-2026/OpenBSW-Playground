@@ -1,0 +1,138 @@
+# OpenBSW + SOVD Hackathon Demo
+#
+# Services:
+#   1. openbsw-ecu:   The OpenBSW POSIX reference app with SOVD demo overlay
+#   2. sovd-cda:      Python stub CDA (default)
+#   3. real-sovd-cda: Eclipse OpenSOVD CDA (Rust, activate with --profile real-cda)
+#   4. grafana:       Dashboard for live sensor + fault visualisation
+#
+# All share a bridge network for TAP-based DoIP communication.
+#
+# Usage:
+#   # Python stub CDA (default):
+#   cd OpenBSW-SOVD-Demo && docker compose --profile stub-cda up --build
+#
+#   # Real CDA (Eclipse OpenSOVD):
+#   cd OpenBSW-SOVD-Demo && docker compose --profile real-cda up --build
+#
+#   # Grafana: http://localhost:3000
+
+version: '3.8'
+
+services:
+  openbsw-ecu:
+    build:
+      context: ../openbsw
+      dockerfile: docker/development/Dockerfile
+    container_name: openbsw-ecu
+    cap_add:
+      - NET_ADMIN    # required for TAP interface
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - ../openbsw:/workspace:rw
+      - ./openbsw-overlay:/workspace-overlay/openbsw-overlay:ro
+      - ./CMakeLists.txt:/workspace-overlay/CMakeLists.txt:ro
+      - ./CMakePresets.json:/workspace-overlay/CMakePresets.json:ro
+    networks:
+      doip-net:
+        ipv4_address: 192.168.0.201
+    entrypoint: >
+      /bin/bash -c "
+        ip tuntap add dev tap0 mode tap &&
+        ip link set tap0 up &&
+        ip address add 192.168.0.201/24 dev tap0 &&
+        cd /workspace-overlay &&
+        cmake -B build/posix-freertos-sovd
+          -G 'Ninja Multi-Config'
+          -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+          -DCMAKE_CONFIGURATION_TYPES='Debug;Release'
+          -DCMAKE_DEFAULT_BUILD_TYPE=Release
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          -DCMAKE_CXX_FLAGS='-Wall -Wextra -Wvla -Wno-deprecated-volatile'
+          -DCMAKE_CXX_FLAGS_RELEASE='-O2 -DNDEBUG'
+          -DCMAKE_C_FLAGS='-Wall -Wextra'
+          -DCMAKE_C_FLAGS_RELEASE='-O2 -DNDEBUG'
+          -DCMAKE_COLOR_DIAGNOSTICS=ON
+          -DBUILD_EXECUTABLE=referenceApp
+          -DBUILD_TARGET_PLATFORM=POSIX
+          -DBUILD_TARGET_RTOS=FREERTOS
+          -DOPENBSW_DIR=/workspace
+          2>&1 | tail -5 &&
+        cmake --build build/posix-freertos-sovd 2>&1 | tail -10 &&
+        ./build/posix-freertos-sovd/Release/app.sovdDemo.elf
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "ss -tlnp | grep -q :13400 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+
+  sovd-cda:
+    build:
+      context: ./sovd-cda
+    container_name: sovd-cda
+    profiles: ["stub-cda"]
+    ports:
+      - "8080:8080"
+    networks:
+      doip-net:
+        ipv4_address: 192.168.0.10
+    depends_on:
+      openbsw-ecu:
+        condition: service_healthy
+    environment:
+      - ECU_HOST=192.168.0.201
+
+  # Real Eclipse OpenSOVD Classic Diagnostic Adapter (Rust)
+  # Activate with: docker compose --profile real-cda up
+  real-sovd-cda:
+    build:
+      context: .
+      dockerfile: real-sovd-cda/Dockerfile
+      additional_contexts:
+        cda-src: ./real-sovd-cda/classic-diagnostic-adapter
+    container_name: real-sovd-cda
+    profiles: ["real-cda"]
+    ports:
+      - "8080:8080"
+    networks:
+      doip-net:
+        ipv4_address: 192.168.0.10
+    depends_on:
+      openbsw-ecu:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health/live || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_INSTALL_PLUGINS=yesoreyeram-infinity-datasource
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      doip-net:
+        ipv4_address: 192.168.0.100
+
+networks:
+  doip-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          gateway: 192.168.0.1

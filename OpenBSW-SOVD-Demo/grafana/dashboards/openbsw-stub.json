@@ -1,0 +1,570 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "title": "",
+      "type": "text",
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"text-align:center;padding:4px 0\"><h2 style=\"margin:0;color:#5CE0D8\">🚗 OpenBSW Vehicle Diagnostics — Stub CDA Dashboard</h2><span style=\"color:#aaa\">Live data via Python Stub CDA → DoIP/UDS → OpenBSW ECU</span></div>"
+      }
+    },
+    {
+      "title": "Active Faults",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 2 },
+      "id": 1,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/faults/active_count",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "active_faults", "text": "Active Faults", "type": "number" }
+          ]
+        }
+      ],
+      "transformations": [],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"], "fields": "" },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      }
+    },
+    {
+      "title": "Total DTCs",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 2 },
+      "id": 2,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/faults/current",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": []
+        }
+      ],
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["count"] } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      }
+    },
+    {
+      "title": "Engine Temperature",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 5, "x": 8, "y": 2 },
+      "id": 3,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/current",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "name", "text": "name", "type": "string" },
+            { "selector": "value", "text": "value", "type": "number" },
+            { "selector": "unit", "text": "unit", "type": "string" }
+          ]
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              { "fieldName": "name", "config": { "id": "equal", "options": { "value": "EngineTemp" } } }
+            ],
+            "type": "include",
+            "match": "any"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 50,
+          "max": 150,
+          "unit": "celsius",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "green", "value": 70 },
+              { "color": "yellow", "value": 100 },
+              { "color": "orange", "value": 115 },
+              { "color": "red", "value": 125 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "orientation": "auto"
+      }
+    },
+    {
+      "title": "Battery Voltage",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 5, "x": 13, "y": 2 },
+      "id": 4,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/current",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "name", "text": "name", "type": "string" },
+            { "selector": "value", "text": "value", "type": "number" },
+            { "selector": "unit", "text": "unit", "type": "string" }
+          ]
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              { "fieldName": "name", "config": { "id": "equal", "options": { "value": "BatteryVoltage" } } }
+            ],
+            "type": "include",
+            "match": "any"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "binary",
+            "binary": { "left": "value", "operator": "/", "right": "100" },
+            "alias": "voltage",
+            "replaceFields": false
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 8,
+          "max": 16,
+          "unit": "volt",
+          "decimals": 1,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 10.5 },
+              { "color": "yellow", "value": 11 },
+              { "color": "green", "value": 12 },
+              { "color": "green", "value": 14 },
+              { "color": "red", "value": 15 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^voltage$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "title": "Vehicle Speed",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 2 },
+      "id": 5,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/current",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "name", "text": "name", "type": "string" },
+            { "selector": "value", "text": "value", "type": "number" },
+            { "selector": "unit", "text": "unit", "type": "string" }
+          ]
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              { "fieldName": "name", "config": { "id": "equal", "options": { "value": "VehicleSpeed" } } }
+            ],
+            "type": "include",
+            "match": "any"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 240,
+          "unit": "velocitykmh",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 120 },
+              { "color": "orange", "value": 160 },
+              { "color": "red", "value": 200 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "title": "🔴 DTC Status Board",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "id": 6,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/faults/current",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "name", "text": "Code", "type": "string" },
+            { "selector": "description", "text": "Description", "type": "string" },
+            { "selector": "severity", "text": "Severity", "type": "string" },
+            { "selector": "system", "text": "System", "type": "string" },
+            { "selector": "testFailed", "text": "Active", "type": "string" },
+            { "selector": "confirmedDTC", "text": "Confirmed", "type": "string" },
+            { "selector": "status_byte", "text": "Status", "type": "number" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "auto", "displayMode": "auto", "filterable": true }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Active" },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background-solid"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "true": { "text": "⚠ ACTIVE", "color": "red" }, "false": { "text": "OK", "color": "green" } } }
+                ]
+              },
+              { "id": "custom.width", "value": 90 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Confirmed" },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background-solid"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "true": { "text": "YES", "color": "orange" }, "false": { "text": "NO", "color": "green" } } }
+                ]
+              },
+              { "id": "custom.width", "value": 80 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Severity" },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "critical": { "text": "🔴 CRITICAL", "color": "red" }, "high": { "text": "🟠 HIGH", "color": "orange" }, "medium": { "text": "🟡 MEDIUM", "color": "yellow" }, "low": { "text": "🟢 LOW", "color": "green" } } }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Status" },
+            "properties": [
+              { "id": "custom.displayMode", "value": "color-text" },
+              { "id": "unit", "value": "hex0x" }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Active", "desc": true }],
+        "footer": { "show": false }
+      }
+    },
+    {
+      "title": "🌡️ Engine Temperature History",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+      "id": 7,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/history?did=CF10",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "time", "text": "time", "type": "timestamp_epoch" },
+            { "selector": "value", "text": "Engine Temp (°C)", "type": "number" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
+            "axisLabel": "°C",
+            "thresholdsStyle": { "mode": "dashed" }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 120 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      }
+    },
+    {
+      "title": "🔋 Battery Voltage History",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+      "id": 8,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/history?did=CF11",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "time", "text": "time", "type": "timestamp_epoch" },
+            { "selector": "value", "text": "Battery (V×100)", "type": "number" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
+            "axisLabel": "V×100",
+            "thresholdsStyle": { "mode": "dashed" }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 1100 },
+              { "color": "green", "value": 1200 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      }
+    },
+    {
+      "title": "🏎️ Vehicle Speed History",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "id": 9,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/sensors/history?did=CF12",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "time", "text": "time", "type": "timestamp_epoch" },
+            { "selector": "value", "text": "Speed (km/h)", "type": "number" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "gradientMode": "scheme",
+            "axisLabel": "km/h"
+          }
+        }
+      },
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      }
+    },
+    {
+      "title": "Fault Trend",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "id": 10,
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "url": "http://localhost:8080/api/faults/history",
+          "url_options": { "method": "GET" },
+          "format": "table",
+          "root_selector": "",
+          "columns": [
+            { "selector": "time", "text": "time", "type": "timestamp_epoch" },
+            { "selector": "active_faults", "text": "Active Faults", "type": "number" },
+            { "selector": "confirmed_faults", "text": "Confirmed", "type": "number" }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 30,
+            "gradientMode": "scheme",
+            "stacking": { "mode": "none" }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Active Faults" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Confirmed" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      }
+    }
+  ],
+  "refresh": "1s",
+  "schemaVersion": 39,
+  "tags": ["openbsw", "sovd", "doip", "hackathon"],
+  "templating": { "list": [] },
+  "time": { "from": "now-5m", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "OpenBSW Vehicle Diagnostics (Stub CDA)",
+  "uid": "openbsw-stub-cda",
+  "version": 1
+}

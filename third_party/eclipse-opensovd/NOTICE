@@ -1,0 +1,30 @@
+Eclipse OpenSOVD - Third-Party Notices
+======================================
+
+This directory vendors the upstream LICENSE and NOTICE files of the
+Eclipse OpenSOVD project as consumed by OpenBSW-Playground via the
+following submodules:
+
+  - OpenBSW-SOVD-Demo/real-sovd-cda/classic-diagnostic-adapter
+        Upstream: https://github.com/eclipse-opensovd/classic-diagnostic-adapter
+        Pinned commit (at release v2026.04.0-hackfest): ce3a566c
+
+  - OpenBSW-SOVD-Demo/real-sovd-cda/odx-converter
+        Upstream: https://github.com/eclipse-opensovd/odx-converter
+        Pinned commit (at release v2026.04.0-hackfest): b4f516ec
+
+License
+-------
+Both subprojects are licensed under Apache License, Version 2.0.
+The LICENSE text in this directory (LICENSE) is identical for both
+subprojects.
+
+Notices
+-------
+The two subprojects ship distinct NOTICE files. Both are vendored here:
+
+  - NOTICE.classic-diagnostic-adapter
+  - NOTICE.odx-converter
+
+Refer to those files for the authoritative third-party attributions
+required by the Apache-2.0 license of each subproject.
