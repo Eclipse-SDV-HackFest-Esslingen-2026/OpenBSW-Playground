@@ -1,0 +1,560 @@
+name: Release
+
+# Builds and publishes OpenBSW-Playground release bundles.
+#
+# - workflow_dispatch from any branch is a dry-run: artifacts only,
+#   no GitHub Release, no GHCR push.
+# - push of a tag matching v* publishes the GitHub Release and
+#   pushes container images to GHCR (with graceful skip on
+#   permission denied).
+#
+# See RELEASING.md for the end-to-end release process.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write     # release job needs to create the GH Release
+  packages: write     # publish-ghcr; gracefully degrades if denied
+
+env:
+  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || format('dryrun-{0}', github.run_number) }}
+  IS_TAG_PUSH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+
+jobs:
+  # -----------------------------------------------------------------
+  # 1. Build POSIX-FreeRTOS SOVD demo binary
+  # -----------------------------------------------------------------
+  build-posix-sovd:
+    name: Build POSIX SOVD demo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          set -e
+          sudo apt-get update
+          # ninja-build is sometimes unavailable on minimal runners;
+          # fall back to pip-installed ninja exactly like local dev did.
+          if ! sudo apt-get install -y cmake ninja-build g++; then
+            sudo apt-get install -y cmake g++
+            python3 -m pip install --user ninja
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          fi
+
+      - name: Configure
+        working-directory: OpenBSW-SOVD-Demo
+        run: cmake --preset posix-freertos-sovd
+
+      - name: Build
+        working-directory: OpenBSW-SOVD-Demo
+        run: cmake --build build/posix-freertos-sovd --config Debug
+
+      - name: Verify artifact
+        run: test -f OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: posix-sovd
+          path: OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf
+          if-no-files-found: error
+          retention-days: 14
+
+  # -----------------------------------------------------------------
+  # 2. Cross-build referenceApp for S32K148 + puncover + safety-crc
+  # -----------------------------------------------------------------
+  build-s32k148:
+    name: Build S32K148 referenceApp (+puncover, +safety-crc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install host build tools
+        run: |
+          set -e
+          sudo apt-get update
+          if ! sudo apt-get install -y cmake ninja-build g++; then
+            sudo apt-get install -y cmake g++
+            python3 -m pip install --user ninja
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          fi
+
+      - name: Install ARM GNU toolchain
+        run: |
+          set -e
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi
+          # Both puncover_tool and safety/crcCheck.py expect the
+          # toolchain at /opt/arm-gnu-toolchain. Symlink to satisfy
+          # the hardcoded path used by puncover_tool/generate_html.py.
+          sudo mkdir -p /opt/arm-gnu-toolchain/bin
+          for t in /usr/bin/arm-none-eabi-*; do
+            sudo ln -sf "$t" "/opt/arm-gnu-toolchain/bin/$(basename "$t")"
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Configure S32K148
+        working-directory: openbsw
+        run: cmake --preset s32k148-freertos-gcc
+
+      - name: Build S32K148 (RelWithDebInfo)
+        working-directory: openbsw
+        run: cmake --build --preset s32k148-freertos-gcc --config RelWithDebInfo
+
+      - name: Locate built ELF
+        id: elf
+        run: |
+          set -e
+          ELF=openbsw/build/s32k148-freertos-gcc/executables/referenceApp/application/RelWithDebInfo/app.referenceApp.elf
+          test -f "$ELF"
+          echo "path=$ELF" >> "$GITHUB_OUTPUT"
+
+      - name: Run puncover (HTML report)
+        working-directory: openbsw/tools/puncover_tool
+        run: |
+          set -e
+          python3 -m pip install --user poetry
+          export PATH="$HOME/.local/bin:$PATH"
+          python run.py
+          test -d output
+
+      - name: Stage puncover report
+        run: |
+          set -e
+          mkdir -p stage/s32k148
+          (cd openbsw/tools/puncover_tool/output && zip -qr "$GITHUB_WORKSPACE/stage/s32k148/puncover-report.zip" .)
+
+      - name: Inject safety CRC into ELF
+        working-directory: openbsw/tools/safety
+        run: |
+          set -e
+          python3 -m pip install --user -r requirements.txt
+          # crcCheck.py expects the ELF under cmake-build-s32k148*/application/.
+          # Mirror the actual build output into that layout.
+          mkdir -p ../../cmake-build-s32k148-gcc/application
+          cp ../../build/s32k148-freertos-gcc/executables/referenceApp/application/RelWithDebInfo/app.referenceApp.elf \
+             ../../cmake-build-s32k148-gcc/application/app.referenceApp.elf
+          python3 crcCheck.py | tee "$GITHUB_WORKSPACE/stage/s32k148/crc-report.txt"
+
+      - name: Stage CRC-injected ELF + HEX
+        run: |
+          set -e
+          ELF=openbsw/cmake-build-s32k148-gcc/application/app.referenceApp.elf
+          cp "$ELF" stage/s32k148/app.referenceApp.elf
+          /opt/arm-gnu-toolchain/bin/arm-none-eabi-objcopy -O ihex \
+              "$ELF" stage/s32k148/app.referenceApp.hex
+          ls -la stage/s32k148/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: s32k148
+          path: stage/s32k148/
+          if-no-files-found: error
+          retention-days: 14
+
+  # -----------------------------------------------------------------
+  # 3. Build the Real CDA Docker image (Rust) and export the binary
+  # -----------------------------------------------------------------
+  build-cda:
+    name: Build Real CDA (Rust) image + binary
+    runs-on: ubuntu-latest
+    outputs:
+      image_digest: ${{ steps.cda_build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build CDA image (load to local docker)
+        id: cda_build
+        working-directory: OpenBSW-SOVD-Demo
+        run: |
+          set -e
+          docker buildx build \
+            --file real-sovd-cda/Dockerfile \
+            --build-context cda-src=real-sovd-cda/classic-diagnostic-adapter \
+            --build-arg USE_PREBUILT=0 \
+            --tag opensovd-cda:${{ env.RELEASE_TAG }} \
+            --load \
+            .
+
+      - name: Save image as tarball
+        run: |
+          set -e
+          mkdir -p stage/cda
+          docker save opensovd-cda:${{ env.RELEASE_TAG }} \
+            | gzip > stage/cda/opensovd-cda-image.tar.gz
+
+      - name: Extract opensovd-cda binary from image
+        run: |
+          set -e
+          cid=$(docker create opensovd-cda:${{ env.RELEASE_TAG }})
+          docker cp "$cid":/app/opensovd-cda stage/cda/opensovd-cda
+          docker rm "$cid" >/dev/null
+          chmod +x stage/cda/opensovd-cda
+          file stage/cda/opensovd-cda || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cda
+          path: stage/cda/
+          if-no-files-found: error
+          retention-days: 14
+
+  # -----------------------------------------------------------------
+  # 4. Documentation (Sphinx HTML, warnings-as-errors)
+  # -----------------------------------------------------------------
+  build-docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y plantuml graphviz
+
+      - name: Install Sphinx and sphinx-needs
+        run: pip install sphinx sphinx-needs sphinx-rtd-theme sphinxcontrib-plantuml Pillow
+
+      - name: Build documentation
+        run: sphinx-build -W -b html doc doc/_build/html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: doc/_build/html/
+          if-no-files-found: error
+          retention-days: 14
+
+  # -----------------------------------------------------------------
+  # 5. Release gate: Tier 1 (unit) + Tier 2 (ECU) tests
+  # -----------------------------------------------------------------
+  test-gate-unit:
+    name: Test gate - Tier 1 (unit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: pip install -r tests/requirements.txt
+      - name: Run unit tests
+        run: pytest tests/unit/ -v --tb=short --junitxml=test-results/unit.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-unit
+          path: test-results/
+
+  test-gate-ecu:
+    name: Test gate - Tier 2 (ECU)
+    runs-on: ubuntu-latest
+    needs: [test-gate-unit, build-posix-sovd]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build + test dependencies
+        run: |
+          set -e
+          sudo apt-get update
+          if ! sudo apt-get install -y cmake ninja-build g++ iproute2; then
+            sudo apt-get install -y cmake g++ iproute2
+            python3 -m pip install --user ninja
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          fi
+          pip install -r tests/requirements.txt
+
+      - name: Download POSIX SOVD ELF
+        uses: actions/download-artifact@v4
+        with:
+          name: posix-sovd
+          path: OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/
+
+      - name: Make ELF executable
+        run: chmod +x OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf
+
+      - name: Setup TAP network interface
+        run: |
+          sudo ip tuntap add dev tap0 mode tap user $(id -u)
+          sudo ip link set tap0 up
+          sudo ip address add 192.168.0.10/24 dev tap0
+
+      - name: Start ECU process
+        run: |
+          set -e
+          nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
+            < /dev/null > /tmp/ecu.log 2>&1 &
+          echo $! > /tmp/ecu.pid
+          for i in $(seq 1 30); do
+            if ss -tlnp | grep -q ':13400'; then break; fi
+            sleep 1
+          done
+          ss -tlnp | grep ':13400' || (cat /tmp/ecu.log && exit 1)
+
+      - name: Run ECU integration tests
+        run: pytest tests/ecu/ -v --tb=short --timeout=30 --junitxml=test-results/ecu.xml
+
+      - name: Collect logs on failure
+        if: failure()
+        run: cat /tmp/ecu.log || true
+
+      - name: Stop ECU and cleanup
+        if: always()
+        run: |
+          kill $(cat /tmp/ecu.pid 2>/dev/null) 2>/dev/null || true
+          sudo ip link delete tap0 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-ecu
+          path: test-results/
+
+  # -----------------------------------------------------------------
+  # 6. Package the release bundle (zip + SHA256SUMS)
+  # -----------------------------------------------------------------
+  package:
+    name: Package release bundle
+    runs-on: ubuntu-latest
+    needs:
+      - build-posix-sovd
+      - build-s32k148
+      - build-cda
+      - build-docs
+      - test-gate-unit
+      - test-gate-ecu
+    outputs:
+      bundle_name: ${{ steps.pkg.outputs.bundle_name }}
+    steps:
+      - uses: actions/checkout@v4
+        # No submodules needed: we only consume artifacts and tracked files.
+
+      - name: Download POSIX SOVD artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: posix-sovd
+          path: dl/posix-sovd
+
+      - name: Download S32K148 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: s32k148
+          path: dl/s32k148
+
+      - name: Download CDA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cda
+          path: dl/cda
+
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: dl/docs
+
+      - name: Assemble bundle
+        id: pkg
+        run: |
+          set -e
+          TAG="${{ env.RELEASE_TAG }}"
+          BUNDLE="OpenBSW-Playground-${TAG}"
+          STAGE="stage/${BUNDLE}"
+          mkdir -p "$STAGE"
+
+          # POSIX SOVD demo binary
+          cp dl/posix-sovd/app.sovdDemo.elf "$STAGE/"
+
+          # S32K148 outputs
+          mkdir -p "$STAGE/s32k148"
+          cp dl/s32k148/app.referenceApp.elf  "$STAGE/s32k148/"
+          cp dl/s32k148/app.referenceApp.hex  "$STAGE/s32k148/"
+          cp dl/s32k148/puncover-report.zip    "$STAGE/s32k148/"
+          cp dl/s32k148/crc-report.txt         "$STAGE/s32k148/"
+
+          # Real CDA binary
+          mkdir -p "$STAGE/cda"
+          cp dl/cda/opensovd-cda "$STAGE/cda/"
+
+          # Stub CDA Python sources
+          cp -r OpenBSW-SOVD-Demo/sovd-cda "$STAGE/sovd-cda"
+
+          # Grafana dashboards
+          mkdir -p "$STAGE/grafana"
+          cp -r OpenBSW-SOVD-Demo/grafana/dashboards "$STAGE/grafana/dashboards"
+
+          # Docs (zipped subfolder)
+          (cd dl/docs && zip -qr "$GITHUB_WORKSPACE/$STAGE/docs.zip" .)
+
+          # ODX / MDD assets from real-sovd-cda/odx-gen/
+          mkdir -p "$STAGE/odx"
+          cp OpenBSW-SOVD-Demo/real-sovd-cda/odx-gen/OpenBSW.mdd "$STAGE/odx/"
+          if compgen -G "OpenBSW-SOVD-Demo/real-sovd-cda/odx-gen/*.pdx" > /dev/null; then
+            cp OpenBSW-SOVD-Demo/real-sovd-cda/odx-gen/*.pdx "$STAGE/odx/"
+          fi
+
+          # Vendored third_party LICENSE/NOTICE tree
+          cp -r third_party "$STAGE/third_party"
+
+          # Top-level docs
+          cp RELEASING.md "$STAGE/"
+          cp README.md "$STAGE/"
+
+          # Zip + SHA256SUMS
+          mkdir -p out
+          (cd stage && zip -qr "$GITHUB_WORKSPACE/out/${BUNDLE}.zip" "$BUNDLE")
+          (cd out && sha256sum "${BUNDLE}.zip" > SHA256SUMS)
+
+          ls -la out/
+          echo "bundle_name=${BUNDLE}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-bundle
+          path: out/
+          if-no-files-found: error
+          retention-days: 30
+
+  # -----------------------------------------------------------------
+  # 7. Publish CDA image to GHCR (tag push only; soft-fail on perms)
+  # -----------------------------------------------------------------
+  publish-ghcr:
+    name: Publish CDA image to GHCR
+    runs-on: ubuntu-latest
+    needs: [build-cda, package]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Download CDA image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cda
+          path: dl/cda
+
+      - name: Load CDA image
+        run: |
+          set -e
+          gunzip -c dl/cda/opensovd-cda-image.tar.gz | docker load
+
+      - name: Login + push (graceful skip on permission denied)
+        id: ghcr
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER_LC: ${{ github.repository_owner }}
+        run: |
+          set +e
+          OWNER_LC=$(echo "$OWNER_LC" | tr '[:upper:]' '[:lower:]')
+          TAG="${{ env.RELEASE_TAG }}"
+          IMAGE="ghcr.io/${OWNER_LC}/opensovd-cda"
+
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          if [ $? -ne 0 ]; then
+            echo "::warning::GHCR login failed (likely missing packages:write). Skipping image push."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          docker tag "opensovd-cda:${TAG}" "${IMAGE}:${TAG}"
+          docker tag "opensovd-cda:${TAG}" "${IMAGE}:latest"
+
+          docker push "${IMAGE}:${TAG}"
+          PUSH_RC=$?
+          docker push "${IMAGE}:latest"
+          PUSH_RC2=$?
+
+          if [ $PUSH_RC -ne 0 ] || [ $PUSH_RC2 -ne 0 ]; then
+            echo "::warning::GHCR push returned non-zero (likely permission denied). Continuing without failing the release."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "image_tag=${IMAGE}:${TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_latest=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
+
+  # -----------------------------------------------------------------
+  # 8. Publish GitHub Release (tag push only; idempotent)
+  # -----------------------------------------------------------------
+  release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-latest
+    needs: [package, publish-ghcr]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download release bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: release-bundle
+          path: out
+
+      - name: Compose release notes
+        id: notes
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          {
+            echo "## OpenBSW-Playground ${TAG}"
+            echo
+            echo "Eclipse SDV HackFest Esslingen 2026 release of the OpenBSW + OpenSOVD demo stack."
+            echo
+            echo "### Bundle contents (\`OpenBSW-Playground-${TAG}.zip\`)"
+            echo
+            echo "- POSIX-FreeRTOS SOVD demo: \`app.sovdDemo.elf\`"
+            echo "- S32K148 referenceApp: ELF + HEX (CRC-injected) + puncover HTML report + CRC report"
+            echo "- Real CDA (Rust) binary: \`opensovd-cda\`"
+            echo "- Stub CDA Python sources: \`sovd-cda/\`"
+            echo "- Grafana dashboards JSON: \`grafana/dashboards/\`"
+            echo "- Sphinx HTML site: \`docs.zip\`"
+            echo "- ODX/MDD assets from \`odx-gen/\`"
+            echo "- Vendored third-party LICENSE / NOTICE files: \`third_party/\`"
+            echo
+            echo "Verify with the included \`SHA256SUMS\`."
+            echo
+            echo "See [RELEASING.md](https://github.com/${{ github.repository }}/blob/${TAG}/RELEASING.md) for the release process."
+          } > release-notes.md
+
+      - name: Create / update GitHub Release (idempotent)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: OpenBSW-Playground ${{ github.ref_name }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            out/*.zip
+            out/SHA256SUMS
