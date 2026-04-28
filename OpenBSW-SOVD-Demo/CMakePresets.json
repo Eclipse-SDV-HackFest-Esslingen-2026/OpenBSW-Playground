@@ -1,0 +1,26 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 28,
+        "patch": 3
+    },
+    "include": [
+        "../openbsw/cmake/presets/config-base.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "posix-freertos-sovd",
+            "displayName": "SOVD Demo (POSIX-FreeRTOS)",
+            "description": "SOVD demo overlay: builds app.sovdDemo.elf with DTC simulation",
+            "inherits": "_config-base",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "BUILD_EXECUTABLE": "referenceApp",
+                "BUILD_TARGET_PLATFORM": "POSIX",
+                "BUILD_TARGET_RTOS": "FREERTOS",
+                "OPENBSW_DIR": "${sourceDir}/../openbsw"
+            }
+        }
+    ]
+}

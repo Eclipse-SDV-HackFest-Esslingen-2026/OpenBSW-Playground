@@ -1,0 +1,27 @@
+# OpenBSW ECU – CDA Configuration
+#
+# This configuration file is used by the Eclipse OpenSOVD Classic Diagnostic Adapter
+# when running against the OpenBSW Reference ECU.
+
+onboard_tester = false
+flash_files_path = "/app/flash"
+
+[server]
+address = "0.0.0.0"
+port = 8080
+
+[database]
+path = "/app/odx"
+exit_no_database_loaded = true
+fallback_to_base_variant = true
+
+[doip]
+tester_address = "192.168.0.10"
+tester_subnet = "255.255.0.0"
+gateway_port = 13400
+send_diagnostic_message_ack = false
+send_timeout_ms = 5000
+
+[logging]
+[logging.otel]
+enabled = false

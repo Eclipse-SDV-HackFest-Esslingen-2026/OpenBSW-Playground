@@ -1,0 +1,117 @@
+name: Build Documentation
+
+on:
+  push:
+    branches: [main, development]
+    paths:
+      - 'doc/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [main, development]
+    paths:
+      - 'doc/**'
+      - '.github/workflows/docs.yml'
+
+jobs:
+  sphinx-build:
+    name: Sphinx Build (warnings-as-errors)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y plantuml graphviz
+
+      - name: Install Sphinx and sphinx-needs
+        run: |
+          pip install sphinx sphinx-needs sphinx-rtd-theme sphinxcontrib-plantuml Pillow
+
+      - name: Build documentation
+        run: sphinx-build -W -b html doc doc/_build/html
+
+      - name: Upload HTML artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-docs
+          path: doc/_build/html/
+          retention-days: 14
+
+  traceability-check:
+    name: Traceability Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y plantuml graphviz
+
+      - name: Install Sphinx and sphinx-needs
+        run: |
+          pip install sphinx sphinx-needs sphinx-rtd-theme sphinxcontrib-plantuml Pillow
+
+      - name: Export needs.json
+        run: sphinx-build -b needs doc doc/_build/needs
+
+      - name: Verify needs.json exists
+        run: |
+          test -f doc/_build/needs/needs.json
+          echo "needs.json exported successfully"
+
+      - name: Validate link integrity
+        run: |
+          python3 - <<'PYEOF'
+          import json, sys
+
+          with open("doc/_build/needs/needs.json") as f:
+              data = json.load(f)
+
+          # Get all valid IDs from all versions
+          all_ids = set()
+          errors = []
+          for version, vdata in data.get("versions", {}).items():
+              needs = vdata.get("needs", {})
+              all_ids.update(needs.keys())
+
+          for version, vdata in data.get("versions", {}).items():
+              needs = vdata.get("needs", {})
+              for nid, need in needs.items():
+                  # Check all link-type fields
+                  for link_field in ("links", "tests", "implements", "satisfies",
+                                     "tests_back", "implements_back", "satisfies_back"):
+                      targets = need.get(link_field, [])
+                      for target in targets:
+                          if target not in all_ids:
+                              errors.append(f"{nid}.{link_field} -> {target} (not found)")
+
+          if errors:
+              print(f"ERROR: {len(errors)} broken link(s):")
+              for e in errors:
+                  print(f"  - {e}")
+              sys.exit(1)
+          else:
+              total = len(all_ids)
+              print(f"OK: {total} need elements, all links valid.")
+          PYEOF
+
+      - name: Upload needs.json artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: needs-json
+          path: doc/_build/needs/needs.json
+          retention-days: 14

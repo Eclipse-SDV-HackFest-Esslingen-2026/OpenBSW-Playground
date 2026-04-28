@@ -1,0 +1,1787 @@
+{
+  "version": "1.0",
+  "ecu_name": "OpenBSW",
+  "revision": "1.0.0",
+  "metadata": [],
+  "feature_flags": [],
+  "variants": [
+    {
+      "diag_layer": {
+        "short_name": "OpenBSW",
+        "long_name": { "value": "OpenBSW Reference ECU" },
+        "funct_classes": [
+          { "short_name": "Ident" },
+          { "short_name": "FaultMem" },
+          { "short_name": "DtcSetting" },
+          { "short_name": "Session" },
+          { "short_name": "Reset" }
+        ],
+        "com_param_refs": [
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalGatewayAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "42",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalGatewayAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "42" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalFunctionalAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "65535",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalFunctionalAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "65535" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalTesterAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "3808",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalTesterAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "3808" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP" }
+            },
+            "com_param": {
+              "com_param_type": "COMPLEX",
+              "short_name": "CP_UniqueRespIdTable",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "ComplexComParam",
+              "specific_data": {
+                "allow_multiple_values": false,
+                "com_params": [
+                  {
+                    "com_param_type": "REGULAR",
+                    "short_name": "CP_DoIPLogicalEcuAddress",
+                    "cp_type": "STANDARD",
+                    "cp_usage": "TESTER",
+                    "specific_data_type": "RegularComParam",
+                    "specific_data": {
+                      "physical_default_value": "42"
+                    }
+                  }
+                ]
+              }
+            },
+            "complex_value": {
+              "entries_type": ["SimpleValue"],
+              "entries": [{ "value": "42" }]
+            }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP_DOBT" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalGatewayAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "42",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalGatewayAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "42" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP_DOBT" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalFunctionalAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "65535",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalFunctionalAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "65535" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP_DOBT" }
+            },
+            "com_param": {
+              "com_param_type": "REGULAR",
+              "short_name": "CP_DoIPLogicalTesterAddress",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "RegularComParam",
+              "specific_data": {
+                "physical_default_value": "3808",
+                "dop": {
+                  "dop_type": "REGULAR",
+                  "short_name": "CP_DoIPLogicalTesterAddress_DOP",
+                  "specific_data_type": "NormalDOP",
+                  "specific_data": {
+                    "diag_coded_type": { "type": "STANDARD_LENGTH_TYPE", "base_data_type": "A_UINT_32", "specific_data_type": "StandardLengthType", "specific_data": { "bit_length": 16 } },
+                    "physical_type": { "base_data_type": "A_UINT_32" },
+                    "compu_method": { "category": "IDENTICAL" }
+                  }
+                }
+              }
+            },
+            "simple_value": { "value": "3808" }
+          },
+          {
+            "protocol": {
+              "diag_layer": { "short_name": "UDS_Ethernet_DoIP_DOBT" }
+            },
+            "com_param": {
+              "com_param_type": "COMPLEX",
+              "short_name": "CP_UniqueRespIdTable",
+              "cp_type": "STANDARD",
+              "cp_usage": "TESTER",
+              "specific_data_type": "ComplexComParam",
+              "specific_data": {
+                "allow_multiple_values": false,
+                "com_params": [
+                  {
+                    "com_param_type": "REGULAR",
+                    "short_name": "CP_DoIPLogicalEcuAddress",
+                    "cp_type": "STANDARD",
+                    "cp_usage": "TESTER",
+                    "specific_data_type": "RegularComParam",
+                    "specific_data": {
+                      "physical_default_value": "42"
+                    }
+                  }
+                ]
+              }
+            },
+            "complex_value": {
+              "entries_type": ["SimpleValue"],
+              "entries": [{ "value": "42" }]
+            }
+          }
+        ],
+        "diag_services": [
+          {
+            "diag_comm": {
+              "short_name": "DefaultSession_Start",
+              "long_name": { "value": "Default Session" },
+              "funct_class": [{ "short_name": "Session" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "16",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SubFunction",
+                  "semantic": "SUBFUNCTION",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "1",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "80",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "SubFunction",
+                    "semantic": "SEMANTIC",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "ExtendedSession_Start",
+              "long_name": { "value": "Extended Session" },
+              "funct_class": [{ "short_name": "Session" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "16",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SubFunction",
+                  "semantic": "SUBFUNCTION",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "3",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "80",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "SubFunction",
+                    "semantic": "SEMANTIC",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "EcuReset_HardReset",
+              "long_name": { "value": "ECU Hard Reset" },
+              "funct_class": [{ "short_name": "Reset" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "17",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SubFunction",
+                  "semantic": "SUBFUNCTION",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "1",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "81",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "SubFunction",
+                    "semantic": "SEMANTIC",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "Identification_Read",
+              "long_name": { "value": "Read Identification" },
+              "funct_class": [{ "short_name": "Ident" }],
+              "diag_class_type": "VARIANT_IDENTIFICATION"
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "61696",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "Identification",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "IDENTICAL_UINT_24",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 24 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "FaultMem_ReportDTCByStatusMask",
+              "long_name": { "value": "Report DTC By Status Mask" },
+              "funct_class": [{ "short_name": "FaultMem" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "25",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SubFunction",
+                  "semantic": "SUBFUNCTION",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "2",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 2,
+                  "param_type": "VALUE",
+                  "short_name": "DTCStatusMask",
+                  "semantic": "DATA",
+                  "byte_position": 2,
+                  "specific_data_type": "Value",
+                  "specific_data": {
+                    "dop": {
+                      "dop_type": "REGULAR",
+                      "short_name": "StatusMaskDOP",
+                      "specific_data_type": "NormalDOP",
+                      "specific_data": {
+                        "compu_method": { "category": "IDENTICAL" },
+                        "diag_coded_type": {
+                          "type": "STANDARD_LENGTH_TYPE",
+                          "base_data_type": "A_UINT_32",
+                          "specific_data_type": "StandardLengthType",
+                          "specific_data": { "bit_length": 8 }
+                        },
+                        "physical_type": { "base_data_type": "A_UINT_32" }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "89",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "SubFunction",
+                    "semantic": "SEMANTIC",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 1
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "DTCStatusAvailabilityMask",
+                    "semantic": "DATA",
+                    "byte_position": 2,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "StatusMaskResponseDOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 8 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "param_type": "VALUE",
+                    "short_name": "DTCAndStatusRecord",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "END_OF_PDU_FIELD",
+                        "short_name": "DTCRecords",
+                        "specific_data_type": "EndOfPduField",
+                        "specific_data": {
+                          "field": {
+                            "basic_structure": {
+                              "dop_type": "STRUCTURE",
+                              "short_name": "DTCRecord",
+                              "specific_data_type": "Structure",
+                              "specific_data": {
+                                "params": [
+                                  {
+                                    "id": 0,
+                                    "param_type": "VALUE",
+                                    "short_name": "DTCCode",
+                                    "semantic": "DATA",
+                                    "byte_position": 0,
+                                    "specific_data_type": "Value",
+                                    "specific_data": {
+                                      "dop": {
+                                        "dop_type": "DTC",
+                                        "short_name": "RecordDataType",
+                                        "specific_data_type": "DTCDOP",
+                                        "specific_data": {
+                                          "diag_coded_type": {
+                                            "type": "STANDARD_LENGTH_TYPE",
+                                            "base_data_type": "A_UINT_32",
+                                            "specific_data_type": "StandardLengthType",
+                                            "specific_data": { "bit_length": 24 }
+                                          },
+                                          "physical_type": { "base_data_type": "A_UINT_32" },
+                                          "compu_method": { "category": "IDENTICAL" },
+                                          "dtcs": [
+                                            { "short_name": "EngCoolantOverTemp", "trouble_code": 65792,   "display_trouble_code": "010100", "text": { "value": "Engine Coolant Temperature Sensor Circuit - Over Temperature" } },
+                                            { "short_name": "BattVoltLow",        "trouble_code": 66048,   "display_trouble_code": "010200", "text": { "value": "Battery Voltage Low" } },
+                                            { "short_name": "CommFault",          "trouble_code": 66304,   "display_trouble_code": "010300", "text": { "value": "CAN/Ethernet Communication Fault" } },
+                                            { "short_name": "SensorMalfunction",  "trouble_code": 66560,   "display_trouble_code": "010400", "text": { "value": "Sensor Malfunction - General" } },
+                                            { "short_name": "BrakeSysFault",      "trouble_code": 66816,   "display_trouble_code": "010500", "text": { "value": "Brake System Fault" } }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "id": 1,
+                                    "param_type": "VALUE",
+                                    "short_name": "DTCStatus",
+                                    "semantic": "DATA",
+                                    "byte_position": 3,
+                                    "specific_data_type": "Value",
+                                    "specific_data": {
+                                      "dop": {
+                                        "dop_type": "REGULAR",
+                                        "short_name": "DTCStatusByte",
+                                        "specific_data_type": "NormalDOP",
+                                        "specific_data": {
+                                          "compu_method": { "category": "IDENTICAL" },
+                                          "diag_coded_type": {
+                                            "type": "STANDARD_LENGTH_TYPE",
+                                            "base_data_type": "A_UINT_32",
+                                            "specific_data_type": "StandardLengthType",
+                                            "specific_data": { "bit_length": 8 }
+                                          },
+                                          "physical_type": { "base_data_type": "A_UINT_32" }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ],
+                                "byte_size": 4
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "FaultMem_ClearDTCs",
+              "long_name": { "value": "Clear DTCs" },
+              "funct_class": [{ "short_name": "FaultMem" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "20",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "GroupOfDTC",
+                  "semantic": "DATA",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "16777215",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 24 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "84",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "StaticData_Read",
+              "long_name": { "value": "Static identifier data" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "52993",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "StaticData",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "StaticData_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_BYTEFIELD",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 128 }
+                          },
+                          "physical_type": { "base_data_type": "A_BYTEFIELD" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "ADC_Value_Read",
+              "long_name": { "value": "ADC potentiometer value" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "52994",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "ADC_Value",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "ADC_Value_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 16 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "WritableData_Read",
+              "long_name": { "value": "Writable data identifier" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "52995",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "WritableData",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "WritableData_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_BYTEFIELD",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 128 }
+                          },
+                          "physical_type": { "base_data_type": "A_BYTEFIELD" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "WritableData_Write",
+              "long_name": { "value": "Writable data identifier" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "46",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "52995",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                },
+                {
+                  "id": 2,
+                  "param_type": "VALUE",
+                  "short_name": "WritableData",
+                  "semantic": "DATA",
+                  "byte_position": 3,
+                  "specific_data_type": "Value",
+                  "specific_data": {
+                    "dop": {
+                      "dop_type": "REGULAR",
+                      "short_name": "WritableData_Write_DOP",
+                      "specific_data_type": "NormalDOP",
+                      "specific_data": {
+                        "compu_method": { "category": "IDENTICAL" },
+                        "diag_coded_type": {
+                          "type": "STANDARD_LENGTH_TYPE",
+                          "base_data_type": "A_BYTEFIELD",
+                          "specific_data_type": "StandardLengthType",
+                          "specific_data": { "bit_length": 128 }
+                        },
+                        "physical_type": { "base_data_type": "A_BYTEFIELD" }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "110",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "EngineTemp_Read",
+              "long_name": { "value": "Engine coolant temperature" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "53008",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "EngineTemp",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "EngineTemp_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 32 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "BatteryVoltage_Read",
+              "long_name": { "value": "Battery voltage" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "53009",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "BatteryVoltage",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "BatteryVoltage_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 32 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "diag_comm": {
+              "short_name": "VehicleSpeed_Read",
+              "long_name": { "value": "Vehicle speed" },
+              "funct_class": [{ "short_name": "Ident" }]
+            },
+            "request": {
+              "params": [
+                {
+                  "id": 0,
+                  "param_type": "CODED_CONST",
+                  "short_name": "SID_RQ",
+                  "semantic": "SERVICE-ID",
+                  "byte_position": 0,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "34",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 8 }
+                    }
+                  }
+                },
+                {
+                  "id": 1,
+                  "param_type": "CODED_CONST",
+                  "short_name": "DID_RQ",
+                  "semantic": "DID",
+                  "byte_position": 1,
+                  "specific_data_type": "CodedConst",
+                  "specific_data": {
+                    "coded_value": "53010",
+                    "diag_coded_type": {
+                      "type": "STANDARD_LENGTH_TYPE",
+                      "base_data_type": "A_UINT_32",
+                      "specific_data_type": "StandardLengthType",
+                      "specific_data": { "bit_length": 16 }
+                    }
+                  }
+                }
+              ]
+            },
+            "pos_responses": [
+              {
+                "response_type": "POS_RESPONSE",
+                "params": [
+                  {
+                    "id": 0,
+                    "param_type": "CODED_CONST",
+                    "short_name": "SID_PR",
+                    "semantic": "SERVICE-ID",
+                    "byte_position": 0,
+                    "specific_data_type": "CodedConst",
+                    "specific_data": {
+                      "coded_value": "98",
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 8 }
+                      }
+                    }
+                  },
+                  {
+                    "id": 1,
+                    "param_type": "MATCHING_REQUEST_PARAM",
+                    "short_name": "DID_PR",
+                    "semantic": "DID",
+                    "byte_position": 1,
+                    "specific_data_type": "MatchingRequestParam",
+                    "specific_data": {
+                      "request_byte_pos": 1,
+                      "byte_length": 2
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "param_type": "VALUE",
+                    "short_name": "VehicleSpeed",
+                    "semantic": "DATA",
+                    "byte_position": 3,
+                    "specific_data_type": "Value",
+                    "specific_data": {
+                      "dop": {
+                        "dop_type": "REGULAR",
+                        "short_name": "VehicleSpeed_DOP",
+                        "specific_data_type": "NormalDOP",
+                        "specific_data": {
+                          "compu_method": { "category": "IDENTICAL" },
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 32 }
+                          },
+                          "physical_type": { "base_data_type": "A_UINT_32" }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "state_charts": []
+      },
+      "is_base_variant": true,
+      "variant_pattern": [],
+      "parent_refs": []
+    },
+    {
+      "diag_layer": {
+        "short_name": "OpenBSW_App_Default",
+        "long_name": { "value": "OpenBSW Default Application" },
+        "funct_classes": [],
+        "com_param_refs": [],
+        "diag_services": [],
+        "state_charts": []
+      },
+      "is_base_variant": false,
+      "variant_pattern": [
+        {
+          "matching_parameter": [
+            {
+              "expected_value": "1",
+              "diag_service": {
+                "diag_comm": {
+                  "short_name": "Identification_Read",
+                  "long_name": { "value": "Read Identification" },
+                  "funct_class": [{ "short_name": "Ident" }],
+                  "diag_class_type": "VARIANT_IDENTIFICATION"
+                },
+                "request": {
+                  "params": [
+                    {
+                      "id": 0,
+                      "param_type": "CODED_CONST",
+                      "short_name": "SID_RQ",
+                      "semantic": "SERVICE-ID",
+                      "byte_position": 0,
+                      "specific_data_type": "CodedConst",
+                      "specific_data": {
+                        "coded_value": "34",
+                        "diag_coded_type": {
+                          "type": "STANDARD_LENGTH_TYPE",
+                          "base_data_type": "A_UINT_32",
+                          "specific_data_type": "StandardLengthType",
+                          "specific_data": { "bit_length": 8 }
+                        }
+                      }
+                    },
+                    {
+                      "id": 1,
+                      "param_type": "CODED_CONST",
+                      "short_name": "DID_RQ",
+                      "semantic": "DID",
+                      "byte_position": 1,
+                      "specific_data_type": "CodedConst",
+                      "specific_data": {
+                        "coded_value": "61696",
+                        "diag_coded_type": {
+                          "type": "STANDARD_LENGTH_TYPE",
+                          "base_data_type": "A_UINT_32",
+                          "specific_data_type": "StandardLengthType",
+                          "specific_data": { "bit_length": 16 }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "pos_responses": [
+                  {
+                    "response_type": "POS_RESPONSE",
+                    "params": [
+                      {
+                        "id": 0,
+                        "param_type": "CODED_CONST",
+                        "short_name": "SID_PR",
+                        "semantic": "SERVICE-ID",
+                        "byte_position": 0,
+                        "specific_data_type": "CodedConst",
+                        "specific_data": {
+                          "coded_value": "98",
+                          "diag_coded_type": {
+                            "type": "STANDARD_LENGTH_TYPE",
+                            "base_data_type": "A_UINT_32",
+                            "specific_data_type": "StandardLengthType",
+                            "specific_data": { "bit_length": 8 }
+                          }
+                        }
+                      },
+                      {
+                        "id": 1,
+                        "param_type": "MATCHING_REQUEST_PARAM",
+                        "short_name": "DID_PR",
+                        "semantic": "DID",
+                        "byte_position": 1,
+                        "specific_data_type": "MatchingRequestParam",
+                        "specific_data": {
+                          "request_byte_pos": 1,
+                          "byte_length": 2
+                        }
+                      },
+                      {
+                        "id": 2,
+                        "param_type": "VALUE",
+                        "short_name": "Identification",
+                        "semantic": "DATA",
+                        "byte_position": 3,
+                        "specific_data_type": "Value",
+                        "specific_data": {
+                          "dop": {
+                            "dop_type": "REGULAR",
+                            "short_name": "IDENTICAL_UINT_24",
+                            "specific_data_type": "NormalDOP",
+                            "specific_data": {
+                              "compu_method": { "category": "IDENTICAL" },
+                              "diag_coded_type": {
+                                "type": "STANDARD_LENGTH_TYPE",
+                                "base_data_type": "A_UINT_32",
+                                "specific_data_type": "StandardLengthType",
+                                "specific_data": { "bit_length": 24 }
+                              },
+                              "physical_type": { "base_data_type": "A_UINT_32" }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "out_param": {
+                "id": 2,
+                "param_type": "VALUE",
+                "short_name": "Identification",
+                "semantic": "DATA",
+                "byte_position": 3,
+                "specific_data_type": "Value",
+                "specific_data": {
+                  "dop": {
+                    "dop_type": "REGULAR",
+                    "short_name": "IDENTICAL_UINT_24",
+                    "specific_data_type": "NormalDOP",
+                    "specific_data": {
+                      "compu_method": { "category": "IDENTICAL" },
+                      "diag_coded_type": {
+                        "type": "STANDARD_LENGTH_TYPE",
+                        "base_data_type": "A_UINT_32",
+                        "specific_data_type": "StandardLengthType",
+                        "specific_data": { "bit_length": 24 }
+                      },
+                      "physical_type": { "base_data_type": "A_UINT_32" }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "parent_refs": []
+    }
+  ],
+  "functional_groups": [],
+  "dtcs": [
+    { "short_name": "EngCoolantOverTemp", "trouble_code": 65792,   "display_trouble_code": "010100", "text": { "value": "Engine Coolant Temperature Sensor Circuit - Over Temperature" } },
+    { "short_name": "BattVoltLow",        "trouble_code": 66048,   "display_trouble_code": "010200", "text": { "value": "Battery Voltage Low" } },
+    { "short_name": "CommFault",           "trouble_code": 66304,   "display_trouble_code": "010300", "text": { "value": "CAN/Ethernet Communication Fault" } },
+    { "short_name": "SensorMalfunction",   "trouble_code": 66560,   "display_trouble_code": "010400", "text": { "value": "Sensor Malfunction - General" } },
+    { "short_name": "BrakeSysFault",       "trouble_code": 66816,   "display_trouble_code": "010500", "text": { "value": "Brake System Fault" } }
+  ]
+}

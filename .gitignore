@@ -1,0 +1,6 @@
+_old/
+OpenBSW-SOVD-Demo/build/
+OpenBSW-SOVD-Demo/sovd-cda/.venv/
+OpenBSW-SOVD-Demo/sovd-cda/__pycache__/
+/sovd-demo/
+doc/_build/
