@@ -151,7 +151,10 @@ jobs:
         working-directory: openbsw/tools/safety
         run: |
           set -e
-          python3 -m pip install --user -r requirements.txt
+          # Upstream requirements.txt has a malformed marker line
+          # ("python_version >= "3.10"" instead of "; python_version ...");
+          # install only the actual dependency directly to work around it.
+          python3 -m pip install --user pyelftools==0.32
           # crcCheck.py expects the ELF under cmake-build-s32k148*/application/.
           # Mirror the actual build output into that layout.
           mkdir -p ../../cmake-build-s32k148-gcc/application
@@ -325,7 +328,7 @@ jobs:
           nohup OpenBSW-SOVD-Demo/build/posix-freertos-sovd/Debug/app.sovdDemo.elf \
             < /dev/null > /tmp/ecu.log 2>&1 &
           echo $! > /tmp/ecu.pid
-          for i in $(seq 1 30); do
+          for i in $(seq 1 90); do
             if ss -tlnp | grep -q ':13400'; then break; fi
             sleep 1
           done
