@@ -13,42 +13,22 @@ including error patterns encountered and their solutions.
 
 *Covers: [RG-1], [RG-2], [RG-4], [RG-5]*
 
-```
- ┌─────────────────────────────────────────────────────────────────────┐
- │                         Host / Dev-Container                       │
- │                                                                    │
- │  ┌───────────────────────┐         ┌───────────────────────┐       │
- │  │   OpenBSW ECU (C++)   │  DoIP   │  OpenSOVD CDA (Rust)  │       │
- │  │                       │ :13400  │                       │       │
- │  │  app.sovdDemo.elf     │◄═══════►│  opensovd-cda         │       │
- │  │                       │  TCP    │                       │       │
- │  │  POSIX-FreeRTOS       │  over   │  axum HTTP server     │       │
- │  │  lwIP TCP/IP stack    │  tap0   │  DoIP client          │       │
- │  │                       │         │                       │       │
- │  │  Logical addr: 0x002A │         │  Tester addr: 0x0EE0  │       │
- │  │  IP: 192.168.0.201    │         │  IP: 192.168.0.10     │       │
- │  └───────────┬───────────┘         └───────────┬───────────┘       │
- │              │                                 │                   │
- │              │  tap0 (L2 TAP interface)        │ :8080 REST        │
- │              │  192.168.0.0/24 subnet          │                   │
- │              │                                 │                   │
- │  ┌───────────┴─────────────────────────────────┴───────────┐       │
- │  │                    doip-net bridge                      │       │
- │  │              (or host networking for local mode)        │       │
- │  └─────────────────────────┬───────────────────────────────┘       │
- │                            │                                       │
- │                ┌───────────┴───────────┐                           │
- │                │       Grafana         │                           │
- │                │   192.168.0.100       │                           │
- │                │   :3000               │                           │
- │                │   Infinity datasource │                           │
- │                └───────────────────────┘                           │
- │                                                                    │
- └────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph host[Host / Dev-Container]
+        ecu["OpenBSW ECU (C++)<br/>app.sovdDemo.elf<br/>POSIX-FreeRTOS<br/>lwIP TCP/IP stack<br/>Logical addr: 0x002A<br/>IP: 192.168.0.201"]
+        cda["OpenSOVD CDA (Rust)<br/>opensovd-cda<br/>axum HTTP server<br/>DoIP client<br/>Tester addr: 0x0EE0<br/>IP: 192.168.0.10"]
+        bridge["doip-net bridge<br/>(or host networking for local mode)"]
+        grafana["Grafana<br/>192.168.0.100<br/>:3000<br/>Infinity datasource"]
+  end
 
-  External access:
-    SOVD API   → http://localhost:8080/vehicle/v15/...
-    Grafana    → http://localhost:3000
+  ecu <-->|DoIP TCP :13400 over tap0| cda
+  ecu -->|tap0 (L2 TAP interface)<br/>192.168.0.0/24 subnet| bridge
+  cda --> bridge
+  bridge --> grafana
+
+    sovd["External access<br/>SOVD API: http://localhost:8080/vehicle/v15/..."] -->|REST :8080| cda
+    ui["External access<br/>Grafana: http://localhost:3000"] --> grafana
 ```
 
 ### Component Summary
@@ -67,35 +47,14 @@ including error patterns encountered and their solutions.
 
 *Covers: [RG-1], [RG-2], [RG-4]*
 
-```
-  ┌─────────────────────────────────────────────────────────────────┐
-  │                        SOVD Client                              │
-  │              (curl / Grafana / Browser)                         │
-  └───────────────────────┬─────────────────────────────────────────┘
-                          │  HTTP / JSON
-  ┌───────────────────────┴─────────────────────────────────────────┐
-  │                    SOVD REST Layer                              │
-  │              /vehicle/v15/components/...                        │
-  │              JWT Bearer authentication                          │
-  │              axum router (cda-sovd)                              │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                    UDS Application Layer                        │
-  │              Service dispatch (cda-comm-uds)                    │
-  │              MDD-driven request encoding                        │
-  │              Variant detection / fallback                       │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                    DoIP Transport Layer                         │
-  │              ISO 13400-2 framing (cda-comm-doip)                │
-  │              Routing activation, alive check                    │
-  │              DiagnosticMessage (0x8001) exchange                │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                    TCP/IP (Kernel / lwIP)                       │
-  │              CDA: kernel TCP socket                             │
-  │              ECU: lwIP userspace TCP/IP over TAP                │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                    L2 Ethernet (tap0)                           │
-  │              Linux TAP interface, 192.168.0.0/24                │
-  └─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    client["SOVD Client<br/>(curl / Grafana / Browser)"] -->|HTTP / JSON| rest
+    rest["SOVD REST Layer<br/>/vehicle/v15/components/...<br/>JWT Bearer authentication<br/>axum router (cda-sovd)"] --> uds
+    uds["UDS Application Layer<br/>Service dispatch (cda-comm-uds)<br/>MDD-driven request encoding<br/>Variant detection / fallback"] --> doip
+    doip["DoIP Transport Layer<br/>ISO 13400-2 framing (cda-comm-doip)<br/>Routing activation, alive check<br/>DiagnosticMessage (0x8001) exchange"] --> tcp
+    tcp["TCP/IP (Kernel / lwIP)<br/>CDA: kernel TCP socket<br/>ECU: lwIP userspace TCP/IP over TAP"] --> l2
+    l2["L2 Ethernet (tap0)<br/>Linux TAP interface<br/>192.168.0.0/24"]
 ```
 
 ---
@@ -106,33 +65,26 @@ including error patterns encountered and their solutions.
 
 The demo builds on top of upstream OpenBSW without modifying its source tree:
 
-```
-  OpenBSW-SOVD-Demo/
-  │
-  ├── CMakeLists.txt              ─┐
-  │   add_subdirectory(openbsw)    │  Adds all upstream library targets
-  │   add_library(uds_dtc_overlay) │  Overlay: ReadDTCInformation, ClearDTC
-  │   add_executable(app.sovdDemo) │  Demo binary with DTC + sensor simulation
-  │                                │
-  │   target_include_directories(  │  Overlay includes listed FIRST
-  │     openbsw-overlay/app/include│  → UdsSystem.h shadows upstream
-  │     openbsw/.../include        │
-  │   )                           ─┘
-  │
-  ├── openbsw-overlay/
-  │   ├── app/
-  │   │   ├── include/systems/UdsSystem.h      ← Replaces upstream header
-  │   │   ├── include/uds/DtcSimulator.h
-  │   │   ├── include/uds/ReadIdentifierSimulated.h
-  │   │   └── src/...                          ← Corresponding implementations
-  │   ├── libs/uds/
-  │   │   ├── include/uds/dtc/                 ← DTC model classes
-  │   │   └── src/services/                    ← UDS 0x19, 0x14 implementations
-  │   └── libs/doip/
-  │       └── src/doip/server/
-  │           └── DoIpServerConnectionHandler.cpp  ← DoIP interop fix (lines 284-290)
-  │
-  └── openbsw/                                 ← Upstream (unmodified)
+```mermaid
+flowchart TD
+    root["OpenBSW-SOVD-Demo"]
+    cmake["CMakeLists.txt<br/>add_subdirectory(openbsw)<br/>add_library(uds_dtc_overlay)<br/>add_executable(app.sovdDemo)"]
+    include_order["target_include_directories<br/>openbsw-overlay/app/include first<br/>UdsSystem.h shadows upstream"]
+    overlay["openbsw-overlay"]
+    overlay_app["app/include and src<br/>systems/UdsSystem.h replaces upstream header<br/>DtcSimulator.h<br/>ReadIdentifierSimulated.h<br/>corresponding implementations"]
+    overlay_uds["libs/uds<br/>include/uds/dtc<br/>src/services<br/>UDS 0x19 and 0x14 implementations"]
+    overlay_doip["libs/doip/src/doip/server<br/>DoIpServerConnectionHandler.cpp<br/>DoIP interop fix at lines 284-290"]
+    upstream["openbsw<br/>Upstream (unmodified)"]
+
+    root --> cmake
+    root --> overlay
+    root --> upstream
+    cmake -->|Adds all upstream library targets| upstream
+    cmake --> include_order
+    overlay --> overlay_app
+    overlay --> overlay_uds
+    overlay --> overlay_doip
+    overlay_doip -->|Injected in place of upstream source| upstream
 ```
 
 **Key insights**:
@@ -157,40 +109,20 @@ All other upstream sources are compiled as-is.
 This is the working end-to-end flow for reading a sensor value
 (e.g. `GET /vehicle/v15/components/openbsw/data/EngineTemp`):
 
-```
-  Client                     CDA (Rust)               ECU (OpenBSW)
-    │                          │                          │
-    │  POST /authorize         │                          │
-    │  {"client_id":"test"...} │                          │
-    │─────────────────────────>│                          │
-    │  {"access_token":"JWT"}  │                          │
-    │<─────────────────────────│                          │
-    │                          │                          │
-    │  GET .../data/EngineTemp │                          │
-    │  Authorization: Bearer.. │                          │
-    │─────────────────────────>│                          │
-    │                          │                          │
-    │                          │  DoIP: DiagnosticMessage (0x8001)
-    │                          │  [0x0EE0 → 0x002A]       │
-    │                          │  UDS: 0x22 0xCF 0x10     │
-    │                          │─────────────────────────>│
-    │                          │                          │
-    │                          │  DoIP: DiagPositiveAck (0x8002)
-    │                          │  [0x002A → 0x0EE0]       │
-    │                          │<─────────────────────────│
-    │                          │                          │
-    │                          │  DoIP: DiagnosticMessage (0x8001)
-    │                          │  [0x002A → 0x0EE0]       │
-    │                          │  UDS: 0x62 0xCF 0x10 <val>
-    │                          │<─────────────────────────│
-    │                          │                          │
-    │                          │  (ACK suppressed by config)
-    │                          │                          │
-    │  {"id":"enginetemp",     │                          │
-    │   "data":{"EngineTemp":  │                          │
-    │   121}}                  │                          │
-    │<─────────────────────────│                          │
-    │                          │                          │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CDA as CDA (Rust)
+    participant ECU as ECU (OpenBSW)
+
+    Client->>CDA: POST /authorize\n{"client_id":"test"...}
+    CDA-->>Client: {"access_token":"JWT"}
+    Client->>CDA: GET .../data/EngineTemp\nAuthorization: Bearer..
+    CDA->>ECU: DoIP DiagnosticMessage (0x8001)\n[0x0EE0 -> 0x002A]\nUDS 0x22 0xCF 0x10
+    ECU-->>CDA: DoIP DiagPositiveAck (0x8002)\n[0x002A -> 0x0EE0]
+    ECU-->>CDA: DoIP DiagnosticMessage (0x8001)\n[0x002A -> 0x0EE0]\nUDS 0x62 0xCF 0x10 <val>
+    Note over CDA: ACK suppressed by config
+    CDA-->>Client: {"id":"enginetemp","data":{"EngineTemp":121}}
 ```
 
 **Key points**:
@@ -200,62 +132,32 @@ This is the working end-to-end flow for reading a sensor value
 
 ### 4.2 Good Case — Fault Memory Read
 
-```
-  Client                     CDA (Rust)               ECU (OpenBSW)
-    │                          │                          │
-    │  GET .../faults          │                          │
-    │  Authorization: Bearer.. │                          │
-    │─────────────────────────>│                          │
-    │                          │                          │
-    │                          │  DiagMsg: UDS 0x19 0x02 0xFF
-    │                          │  (ReadDTCInfo, reportByStatusMask)
-    │                          │─────────────────────────>│
-    │                          │                          │
-    │                          │  DiagPosAck (0x8002)      │
-    │                          │<─────────────────────────│
-    │                          │                          │
-    │                          │  DiagMsg: UDS 0x59 0x02 ...
-    │                          │  (5 DTCs × 4 bytes each) │
-    │                          │<─────────────────────────│
-    │                          │                          │
-    │  {"items":[              │                          │
-    │    {"code":"010100",     │                          │
-    │     "fault_name":"Engine │                          │
-    │      Coolant...",        │                          │
-    │     "status":{...}},     │                          │
-    │    ... 4 more DTCs       │                          │
-    │  ]}                      │                          │
-    │<─────────────────────────│                          │
-    │                          │                          │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CDA as CDA (Rust)
+    participant ECU as ECU (OpenBSW)
+
+    Client->>CDA: GET .../faults\nAuthorization: Bearer..
+    CDA->>ECU: DiagMsg: UDS 0x19 0x02 0xFF\n(ReadDTCInfo, reportByStatusMask)
+    ECU-->>CDA: DiagPosAck (0x8002)
+    ECU-->>CDA: DiagMsg: UDS 0x59 0x02 ...\n(5 DTCs x 4 bytes each)
+    CDA-->>Client: {"items":[{"code":"010100","fault_name":"Engine Coolant...","status":{...}}, ... 4 more DTCs]}
 ```
 
 ### 4.3 Good Case — DoIP Connection Establishment
 
-```
-  CDA (Tester)                               ECU (DoIP Server)
-    │                                            │
-    │  UDP: Vehicle Identification Request (VIR)  │
-    │  Broadcast to 255.255.255.255:13400         │
-    │───────────────────────────────────────────>│
-    │                                            │
-    │  UDP: Vehicle Announcement Message (VAM)    │
-    │  LogicalAddr=0x002A, VIN, EID, GID          │
-    │<───────────────────────────────────────────│
-    │                                            │
-    │  TCP: Connect to 192.168.0.201:13400        │
-    │───────────────────────────────────────────>│
-    │                                            │
-    │  DoIP: Routing Activation Request (0x0005)  │
-    │  SourceAddr=0x0EE0, ActivationType=0x00     │
-    │───────────────────────────────────────────>│
-    │                                            │
-    │  DoIP: Routing Activation Response (0x0006) │
-    │  TesterAddr=0x0EE0, Status=0x10 (success)   │
-    │<───────────────────────────────────────────│
-    │                                            │
-    │  ══════ Connection ACTIVE ══════            │
-    │  Ready for DiagnosticMessage exchange        │
-    │                                            │
+```mermaid
+sequenceDiagram
+    participant CDA as CDA (Tester)
+    participant ECU as ECU (DoIP Server)
+
+    CDA->>ECU: UDP Vehicle Identification Request (VIR)\nBroadcast to 255.255.255.255:13400
+    ECU-->>CDA: UDP Vehicle Announcement Message (VAM)\nLogicalAddr=0x002A, VIN, EID, GID
+    CDA->>ECU: TCP connect to 192.168.0.201:13400
+    CDA->>ECU: DoIP Routing Activation Request (0x0005)\nSourceAddr=0x0EE0, ActivationType=0x00
+    ECU-->>CDA: DoIP Routing Activation Response (0x0006)\nTesterAddr=0x0EE0, Status=0x10 (success)
+    Note over CDA,ECU: Connection ACTIVE\nReady for DiagnosticMessage exchange
 ```
 
 ---
@@ -277,68 +179,34 @@ requests would either timeout or receive garbled data.
 
 *Requirement: [RG-6.1], [RG-6.2]*
 
-```
-  CDA (Tester)                               ECU (DoIP Server)
-    │                                            │
-    │  DiagMsg 0x8001: UDS 0x22 0xCF 0x01         │
-    │───────────────────────────────────────────>│
-    │                                            │  UDS processes request
-    │  DiagPosAck 0x8002 [ECU → CDA]              │  ECU ACKs receipt
-    │<───────────────────────────────────────────│
-    │                                            │
-    │  DiagMsg 0x8001: UDS 0x62 0xCF 0x01 <data>  │  ECU sends response
-    │<───────────────────────────────────────────│
-    │                                            │
-    │  DiagPosAck 0x8002 [CDA → ECU]              │  CDA ACKs response
-    │───────────────────────────────────────────>│
-    │                                            │
-    │                        ┌───────────────────┤
-    │                        │ headerReceived()  │
-    │                        │ payloadType=0x8002│
-    │                        │ → NOT in switch   │
-    │                        │ → headerDefault() │
-    │                        │ → no handler      │
-    │                        │ → NACK 0x01!      │
-    │                        └───────────────────┤
-    │                                            │
-    │  Generic NACK 0x0000: code=0x01             │  ECU rejects ACK
-    │<───────────────────────────────────────────│
-    │                                            │
-    │  !! CDA confused: unexpected NACK !!        │
-    │  !! Next request will timeout !!            │
-    │                                            │
+```mermaid
+sequenceDiagram
+    participant CDA as CDA (Tester)
+    participant ECU as ECU (DoIP Server)
+
+    CDA->>ECU: DiagMsg 0x8001: UDS 0x22 0xCF 0x01
+    Note right of ECU: UDS processes request\nECU ACKs receipt
+    ECU-->>CDA: DiagPosAck 0x8002 [ECU -> CDA]
+    Note right of ECU: ECU sends response
+    ECU-->>CDA: DiagMsg 0x8001: UDS 0x62 0xCF 0x01 <data>
+    CDA->>ECU: DiagPosAck 0x8002 [CDA -> ECU]
+    Note right of ECU: headerReceived()\npayloadType=0x8002\nnot in switch\nheaderDefault()\nno handler\nNACK 0x01
+    ECU-->>CDA: Generic NACK 0x0000: code=0x01
+    Note over CDA: Unexpected NACK\nNext request will timeout
 ```
 
 **Solution (two-sided)**:
 
-```
-  ┌─────────────────────────────────────────────────────────┐
-  │  ECU FIX: DoIpServerConnectionHandler.cpp (OVERLAY)     │
-  │                                                         │
-  │  File: openbsw-overlay/libs/doip/src/doip/server/       │
-  │        DoIpServerConnectionHandler.cpp  (lines 284-290)  │
-  │  Upstream file: UNMODIFIED                               │
-  │                                                         │
-  │  Added to headerReceived() switch:                      │
-  │                                                         │
-  │    case DIAGNOSTIC_MESSAGE_POSITIVE_ACK:  // 0x8002     │
-  │    case DIAGNOSTIC_MESSAGE_NEGATIVE_ACK:  // 0x8003     │
-  │      // Silently consume tester ACKs                    │
-  │      _connection.endReceiveMessage(...);                 │
-  │      return HandledByThisHandler{};                      │
-  │                                                         │
-  ├─────────────────────────────────────────────────────────┤
-  │  CDA FIX: opensovd-cda.toml                            │
-  │                                                         │
-  │    [doip]                                               │
-  │    send_diagnostic_message_ack = false                   │
-  │    send_timeout_ms = 5000                                │
-  │                                                         │
-  │  Note: The CDA has TWO code paths that send ACKs:       │
-  │    1. DoIPConnection::read()  → gated by config ✓       │
-  │    2. handle_response()       → unconditional (bug)      │
-  │  The ECU-side fix handles the unconditional path.        │
-  └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    root["ERR-1 solution"]
+    ecu_fix["ECU FIX<br/>DoIpServerConnectionHandler.cpp (OVERLAY)<br/>openbsw-overlay/libs/doip/src/doip/server/DoIpServerConnectionHandler.cpp<br/>lines 284-290<br/>Upstream file unchanged"]
+    ecu_impl["Added to headerReceived() switch<br/>case DIAGNOSTIC_MESSAGE_POSITIVE_ACK (0x8002)<br/>case DIAGNOSTIC_MESSAGE_NEGATIVE_ACK (0x8003)<br/>Silently consume tester ACKs<br/>_connection.endReceiveMessage(...)<br/>return HandledByThisHandler{}"]
+    cda_fix["CDA FIX<br/>opensovd-cda.toml<br/>[doip]<br/>send_diagnostic_message_ack = false<br/>send_timeout_ms = 5000"]
+    cda_note["CDA has two ACK paths<br/>1. DoIPConnection::read() gated by config<br/>2. handle_response() unconditional bug<br/>ECU-side fix handles the unconditional path"]
+
+    root --> ecu_fix --> ecu_impl
+    root --> cda_fix --> cda_note
 ```
 
 ### 5.2 ERR-2: ECU Process Stopped (SIGTTOU) (RESOLVED)
@@ -353,50 +221,35 @@ default action is to stop the process.
 
 *Requirement: [RG-6.4]*
 
-```
-  Shell                              ECU Process
-    │                                    │
-    │  ./app.sovdDemo.elf &              │
-    │───────────────────────────────────>│
-    │                                    │
-    │                                    │  main() → app_main() → staticInit()
-    │                                    │  Uart::init()
-    │                                    │  tcsetattr(stdout, TCSANOW, ...)
-    │                                    │
-    │                          ┌─────────┤
-    │                          │ Kernel: │
-    │                          │ Process │
-    │                          │ is in   │
-    │                          │ bg and  │
-    │                          │ modifies│
-    │                          │ terminal│
-    │                          │ → send  │
-    │                          │ SIGTTOU │
-    │                          └─────────┤
-    │                                    │
-    │                                    │  SIGTTOU not caught
-    │                                    │  → Process STOPPED (state: T)
-    │                                    │  All pthreads frozen
-    │                                    │  SIGALRM (FreeRTOS tick) cannot fire
-    │                                    │
-    │  ps shows: Tl (stopped)            │
-    │                                    │
+```mermaid
+sequenceDiagram
+    participant Shell
+    participant ECU as ECU Process
+    participant Kernel
+
+    Shell->>ECU: ./app.sovdDemo.elf &
+    Note right of ECU: main() -> app_main() -> staticInit()\nUart::init()
+    ECU->>Kernel: tcsetattr(stdout, TCSANOW, ...)
+    Note over Kernel: Process is in background and modifies terminal\nKernel sends SIGTTOU
+    Kernel-->>ECU: SIGTTOU
+    Note right of ECU: SIGTTOU not caught\nProcess STOPPED (state: T)\nAll pthreads frozen\nSIGALRM cannot fire
+    Note over Shell: ps shows Tl (stopped)
 ```
 
 **Solution**:
 
-```
-  ┌─────────────────────────────────────────────────────────┐
-  │  demo.sh FIX:                                           │
-  │                                                         │
-  │  (trap '' SIGTTOU;                                      │
-  │   ./app.sovdDemo.elf < /dev/null >> log 2>&1 &          │
-  │   echo $! > pidfile)                                    │
-  │                                                         │
-  │  • trap '' SIGTTOU  → ignore the signal                 │
-  │  • < /dev/null      → no stdin (prevents SIGTTIN)       │
-  │  • subshell (...)   → signal trap doesn't leak          │
-  └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    fix["demo.sh FIX"]
+    cmd["trap '' SIGTTOU;<br/>./app.sovdDemo.elf < /dev/null >> log 2>&1 &<br/>echo $! > pidfile"]
+    sig["trap '' SIGTTOU<br/>ignore the signal"]
+    stdin["< /dev/null<br/>no stdin, prevents SIGTTIN"]
+    subshell["subshell group<br/>signal trap does not leak"]
+
+    fix --> cmd
+    cmd --> sig
+    cmd --> stdin
+    cmd --> subshell
 ```
 
 ### 5.3 ERR-3: UDS Request Out of Range (DID Mismatch) (KNOWN)
@@ -410,28 +263,15 @@ work correctly.
 
 *Requirement: [RG-7.1]*
 
-```
-  CDA                                     ECU
-    │                                        │
-    │  DiagMsg: 0x22 0xF1 0x00               │  ReadDataByIdentifier
-    │  (Identification, DID=0xF100)           │  for DID 0xF100
-    │───────────────────────────────────────>│
-    │                                        │
-    │                              ┌─────────┤
-    │                              │ Lookup:  │
-    │                              │ 0xF100   │
-    │                              │ not in   │
-    │                              │ diag job │
-    │                              │ table    │
-    │                              └─────────┤
-    │                                        │
-    │  DiagMsg: 0x7F 0x22 0x31               │  Negative Response
-    │  (NRC = requestOutOfRange)             │  Service 0x22 rejected
-    │<───────────────────────────────────────│
-    │                                        │
+```mermaid
+sequenceDiagram
+    participant CDA
+    participant ECU
 
-  Fix: Update openbsw_ecu.json to use DID 0xCF01 for Identification,
-       or add DID 0xF100 to the ECU's diag job table.
+    CDA->>ECU: DiagMsg: 0x22 0xF1 0x00\nIdentification, DID=0xF100
+    Note right of ECU: ReadDataByIdentifier for DID 0xF100\nLookup 0xF100 not in diag job table
+    ECU-->>CDA: DiagMsg: 0x7F 0x22 0x31\nNRC = requestOutOfRange
+    Note over CDA,ECU: Fix: update openbsw_ecu.json to use DID 0xCF01 for Identification, or add DID 0xF100 to the ECU diag job table.
 ```
 
 ### 5.4 ERR-4: Variant Detection Failure (MITIGATED)
@@ -446,18 +286,14 @@ demo but may miss variant-specific services in a multi-variant setup.
 
 *Requirement: [RG-2.11]*
 
-```
-  CDA                                     ECU
-    │                                        │
-    │  (Startup: detect variant)              │
-    │  variant_pattern is []                  │
-    │  → No DID to read for detection         │
-    │  → Result: NotFound(None)               │
-    │                                        │
-    │  fallback_to_base_variant = true        │
-    │  → Use base "OpenBSW" diag layer        │
-    │  → All services available ✓             │
-    │                                        │
+```mermaid
+sequenceDiagram
+    participant CDA
+    participant ECU
+
+    Note over CDA: Startup detect variant\nvariant_pattern is []\nNo DID to read for detection\nResult: NotFound(None)
+    Note over CDA: fallback_to_base_variant = true\nUse base OpenBSW diag layer
+    Note over CDA,ECU: All services available
 ```
 
 ### 5.5 ERR-5: AliveCheck NACK (30-second interval) (COSMETIC)
@@ -471,29 +307,15 @@ NACKs.
 **Impact**: Cosmetic — logged as a warning but does not break communication.
 The CDA reconnects if it doesn't receive a response.
 
-```
-  CDA                                     ECU
-    │                                        │
-    │  (Every 30 seconds)                     │
-    │  DoIP: AliveCheckRequest (0x0007)       │
-    │───────────────────────────────────────>│
-    │                                        │
-    │                              ┌─────────┤
-    │                              │ 0x0007   │
-    │                              │ not in   │
-    │                              │ switch   │
-    │                              │ (only    │
-    │                              │ 0x0008   │
-    │                              │ handled) │
-    │                              └─────────┤
-    │                                        │
-    │  Generic NACK 0x0000: code=0x01         │
-    │<───────────────────────────────────────│
-    │                                        │
-    │  CDA: "Received Generic NACK" (warn)    │
-    │  → Connection stays alive               │
-    │  → UDS traffic unaffected               │
-    │                                        │
+```mermaid
+sequenceDiagram
+    participant CDA
+    participant ECU
+
+    CDA->>ECU: Every 30 seconds\nDoIP AliveCheckRequest (0x0007)
+    Note right of ECU: 0x0007 not in switch\nonly 0x0008 handled
+    ECU-->>CDA: Generic NACK 0x0000: code=0x01
+    Note over CDA: Received Generic NACK warning\nConnection stays alive\nUDS traffic unaffected
 ```
 
 ### 5.6 ERR-6: Grafana "No Data" — Bridge Network Cannot Reach localhost (RESOLVED)
@@ -509,20 +331,15 @@ CDA listens.
 and responding to `curl` from the host, but unreachable from Grafana's
 perspective.
 
-```
-  Grafana container (bridge)              Host (CDA on :8080)
-    │                                        │
-    │  Infinity plugin queries:              │
-    │  GET http://localhost:8080/...          │
-    │─────────┐                              │
-    │         │  localhost = 127.0.0.1        │
-    │         │  inside container             │
-    │         │  → port 8080 not listening    │
-    │         │  → connection refused         │
-    │<────────┘                              │
-    │                                        │
-    │  Panel result: "No data"               │
-    │                                        │
+```mermaid
+sequenceDiagram
+    participant Grafana as Grafana container (bridge)
+    participant Host as Host (CDA on :8080)
+
+    Grafana->>Grafana: Infinity plugin queries\nGET http://localhost:8080/...
+    Note right of Grafana: localhost = 127.0.0.1 inside container\nport 8080 not listening\nconnection refused
+    Note over Grafana,Host: CDA remains healthy on the host but is unreachable via localhost from the bridge container
+    Note over Grafana: Panel result: No data
 ```
 
 **Solution**: Changed all panel URLs in `grafana/dashboards/openbsw.json`
@@ -532,26 +349,16 @@ the new host to the datasource's `allowedHosts` in
 flag in the `docker run` command (already present in `demo.sh`) ensures this
 hostname resolves to the host's gateway IP.
 
-```
-  ┌─────────────────────────────────────────────────────────┐
-  │  FIX 1: grafana/dashboards/openbsw.json                │
-  │                                                         │
-  │  All panel target URLs changed:                         │
-  │    http://localhost:8080/vehicle/v15/...                 │
-  │    → http://host.docker.internal:8080/vehicle/v15/...   │
-  │                                                         │
-  ├─────────────────────────────────────────────────────────┤
-  │  FIX 2: grafana/provisioning/datasources/sovd.yaml      │
-  │                                                         │
-  │    allowedHosts:                                        │
-  │      - "http://localhost:8080"                          │
-  │      - "http://host.docker.internal:8080"   ← added    │
-  │                                                         │
-  ├─────────────────────────────────────────────────────────┤
-  │  ALREADY IN PLACE: demo.sh docker run flag              │
-  │                                                         │
-  │    --add-host=host.docker.internal:host-gateway         │
-  └─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    root_fix["ERR-6 solution"]
+    dash["FIX 1<br/>grafana/dashboards/openbsw.json<br/>All panel URLs changed from<br/>http://localhost:8080/vehicle/v15/...<br/>to http://host.docker.internal:8080/vehicle/v15/..."]
+    datasource["FIX 2<br/>grafana/provisioning/datasources/sovd.yaml<br/>allowedHosts includes<br/>http://localhost:8080<br/>http://host.docker.internal:8080"]
+    hostflag["Already in place<br/>demo.sh docker run flag<br/>--add-host=host.docker.internal:host-gateway"]
+
+    root_fix --> dash
+    root_fix --> datasource
+    root_fix --> hostflag
 ```
 
 ---
@@ -673,31 +480,28 @@ target_sources(doip PRIVATE ${_doip_srcs} <overlay path>)
 
 ### 8.1 Local (`demo.sh --real-cda`)
 
-```
-  Host OS (Ubuntu / Dev-Container)
-    │
-    ├── tap0 interface (192.168.0.10/24)
-    ├── ECU process (native binary)
-    ├── CDA Docker container (--network host)
-    └── Grafana Docker container
+```mermaid
+flowchart TB
+  subgraph host_os[Host OS (Ubuntu / Dev-Container)]
+        tap["tap0 interface<br/>192.168.0.10/24"]
+        ecu_proc["ECU process<br/>native binary"]
+        cda_host["CDA Docker container<br/>--network host"]
+        grafana_local["Grafana Docker container"]
+  end
 ```
 
 ### 8.2 Docker Compose (`docker compose --profile real-cda up`)
 
-```
-  Docker
-    │
-    ├── openbsw-ecu container
-    │     tap0 (192.168.0.201)
-    │     doip-net bridge
-    │
-    ├── real-sovd-cda container
-    │     192.168.0.10 on doip-net
-    │     Port 8080 mapped to host
-    │
-    └── grafana container
-          192.168.0.100 on doip-net
-          Port 3000 mapped to host
+```mermaid
+flowchart TB
+    subgraph docker[Docker]
+        ecu_container["openbsw-ecu container<br/>tap0: 192.168.0.201<br/>doip-net bridge"]
+        cda_container["real-sovd-cda container<br/>192.168.0.10 on doip-net<br/>Port 8080 mapped to host"]
+        grafana_container["grafana container<br/>192.168.0.100 on doip-net<br/>Port 3000 mapped to host"]
+    end
+
+    ecu_container <-->|DoIP over doip-net| cda_container
+    cda_container -->|REST data source| grafana_container
 ```
 
 ### 8.3 GitHub Codespaces
@@ -715,14 +519,10 @@ A pre-built `opensovd-cda` binary (x86-64 Linux, unstripped, ~26 MB) is
 checked into `real-sovd-cda/bin/` via **Git LFS**. The Dockerfile supports
 a `USE_PREBUILT` build arg:
 
-```
-  USE_PREBUILT=1 (default when bin/ exists)     USE_PREBUILT=0 (from source)
-  ┌────────────────────────────────┐            ┌────────────────────────────────┐
-  │  debian:trixie-slim            │            │  rust:1.88 + cargo-chef        │
-  │  COPY bin/opensovd-cda /app/   │            │  cargo build --release         │
-  │  + runtime deps (libssl, etc.) │            │  → /tmp/opensovd-cda           │
-  │  ≈ 5 seconds                   │            │  ≈ 10–15 minutes (cold)        │
-  └────────────────────────────────┘            └────────────────────────────────┘
+```mermaid
+flowchart LR
+    prebuilt["USE_PREBUILT=1<br/>default when bin/ exists"] --> prebuilt_image["debian:trixie-slim<br/>COPY bin/opensovd-cda to /app/<br/>runtime deps such as libssl<br/>about 5 seconds"]
+    source["USE_PREBUILT=0<br/>from source"] --> source_image["rust:1.88 + cargo-chef<br/>cargo build --release<br/>output /tmp/opensovd-cda<br/>about 10-15 minutes cold"]
 ```
 
 `demo.sh` auto-detects the pre-built binary and uses the fast path.

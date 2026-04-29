@@ -1,0 +1,89 @@
+{
+  "ecu_name": "FLXC1000",
+  "version": "2025-05-10",
+  "revision": "00.01.00",
+  "dids": [
+    {
+      "did": "0xF100",
+      "did_decimal": 61696,
+      "name": "Identification_Read",
+      "long_name": "",
+      "semantic": "",
+      "readable": true,
+      "writable": false,
+      "data_size": 3,
+      "data_type": "int"
+    },
+    {
+      "did": "0xF186",
+      "did_decimal": 61830,
+      "name": "ActiveDiagnosticSessionDataIdentifier_Read",
+      "long_name": "",
+      "semantic": "IDENTIFICATION",
+      "readable": true,
+      "writable": false,
+      "data_size": 1,
+      "data_type": "int"
+    },
+    {
+      "did": "0xF190",
+      "did_decimal": 61840,
+      "name": "VINDataIdentifier_Read",
+      "long_name": "Vehicle Identification Number",
+      "semantic": "STOREDDATA",
+      "readable": true,
+      "writable": true,
+      "data_size": 17,
+      "data_type": "string"
+    },
+    {
+      "did": "0xF200",
+      "did_decimal": 61952,
+      "name": "FluxCapacitorPowerConsumption_Read",
+      "long_name": "Flux Capacitor Power Consumption",
+      "semantic": "CURRENTDATA",
+      "readable": true,
+      "writable": false,
+      "data_size": 4,
+      "data_type": "bytes"
+    }
+  ],
+  "dtcs": [
+    {
+      "code": "0x01E240",
+      "code_decimal": 123456,
+      "name": "Code1",
+      "text": "DTC Code 1"
+    },
+    {
+      "code": "0x01E241",
+      "code_decimal": 123457,
+      "name": "Code3",
+      "text": "DTC Code 3"
+    },
+    {
+      "code": "0x01E242",
+      "code_decimal": 123458,
+      "name": "Code4",
+      "text": "DTC Code 4"
+    },
+    {
+      "code": "0x01E243",
+      "code_decimal": 123459,
+      "name": "Code5",
+      "text": "DTC Code 5"
+    },
+    {
+      "code": "0x01E244",
+      "code_decimal": 123460,
+      "name": "Code6",
+      "text": "DTC Code 6"
+    },
+    {
+      "code": "0x039447",
+      "code_decimal": 234567,
+      "name": "Code2",
+      "text": "DTC Code 2"
+    }
+  ]
+}

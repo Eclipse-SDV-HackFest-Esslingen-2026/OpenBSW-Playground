@@ -1,3 +1,8 @@
 {
-    "cmake.sourceDirectory": "/workspaces/OpenBSW-Playground/OpenBSW-SOVD-Demo"
+    "cmake.sourceDirectory": "/workspaces/OpenBSW-Playground/OpenBSW-SOVD-Demo",
+    "chat.tools.terminal.autoApprove": {
+        "cmake": true,
+        "npm install": true,
+        "command": true
+    }
 }

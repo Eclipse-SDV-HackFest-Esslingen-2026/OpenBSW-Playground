@@ -6,10 +6,14 @@
 # services — all without modifying openbsw/.
 #
 # Usage:
-#   cmake --preset posix-freertos-sovd
+#   cmake --preset posix-freertos-sovd                # OpenBSW demo ECU
+#   cmake --preset posix-freertos-sovd -DUSE_FLXC1000_ECU=ON  # FLXC1000 ECU
 #   cmake --build build/posix-freertos-sovd
 # ==========================================================================
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
+
+# --- ECU Configuration Option (early, before project()) -------------------
+option(USE_FLXC1000_ECU "Build with FLXC1000 ECU simulation" OFF)
 
 # --- Locate OpenBSW ---------------------------------------------------------
 set(OPENBSW_DIR
@@ -21,8 +25,6 @@ if (NOT EXISTS "${OPENBSW_DIR}/CMakeLists.txt")
 endif ()
 
 # --- Load platform options BEFORE project() so compile definitions are set ---
-# The referenceApp preset sets BUILD_EXECUTABLE=referenceApp, which triggers
-# Options.cmake inclusion inside the openbsw root CMakeLists.
 set(BUILD_EXECUTABLE
     "referenceApp"
     CACHE STRING "Which build to enable" FORCE)
@@ -42,17 +44,15 @@ project(
 # --- Build the full OpenBSW tree (libraries + referenceApp) ------------------
 add_subdirectory("${OPENBSW_DIR}" "${CMAKE_BINARY_DIR}/openbsw")
 
+# --- Overlay: TransportConfiguration for FLXC1000/SOVD ----------------------
+# Must be done BEFORE any target links to transportConfiguration
+# This allows all requests (tester address 0x0000 from OpenSOVD CDA)
+target_include_directories(
+    transportConfiguration
+    BEFORE INTERFACE
+    "${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/transportConfiguration/include")
+
 # --- Overlay: DoIP interop fix -----------------------------------------------
-# The upstream DoIpServerConnectionHandler::headerReceived() does not handle
-# DiagnosticMessagePositiveAck (0x8002) / NegativeAck (0x8003) payload types
-# sent by the tester (e.g. Eclipse OpenSOVD CDA), causing a Generic NACK 0x01.
-# Our overlay adds a case to silently consume these payloads.
-#
-# Fix location: openbsw-overlay/libs/doip/src/doip/server/
-#               DoIpServerConnectionHandler.cpp  lines 284-290
-#
-# Technique: remove the upstream source from the doip target's SOURCES property,
-# then inject our patched copy into the same 'doip' library target.
 get_target_property(_doip_srcs doip SOURCES)
 get_target_property(_doip_srcdir doip SOURCE_DIR)
 list(FILTER _doip_srcs EXCLUDE REGEX "DoIpServerConnectionHandler\\.cpp$")
@@ -65,7 +65,6 @@ target_sources(
         "${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/libs/doip/src/doip/server/DoIpServerConnectionHandler.cpp")
 
 # --- Overlay: DTC/UDS library additions --------------------------------------
-# These are generic ISO 14229 implementations that augment the upstream uds lib.
 add_library(
     uds_dtc_overlay STATIC
     openbsw-overlay/libs/uds/src/services/readdtcinformation/ReadDTCInformation.cpp
@@ -78,15 +77,11 @@ target_include_directories(
 target_link_libraries(uds_dtc_overlay PUBLIC uds)
 
 # --- Overlay: Demo executable ------------------------------------------------
-# Mirrors app.referenceApp but compiles our own UdsSystem (with DTC support)
-# and the demo-specific simulation sources.
-
 set(REFAPP_SRC "${OPENBSW_DIR}/executables/referenceApp/application/src")
 set(REFAPP_INC "${OPENBSW_DIR}/executables/referenceApp/application/include")
 
 add_executable(
     app.sovdDemo
-    # Core application sources (from upstream referenceApp, unchanged)
     ${REFAPP_SRC}/app/app.cpp
     ${REFAPP_SRC}/console/console.cpp
     ${REFAPP_SRC}/logger/logger.cpp
@@ -103,16 +98,30 @@ if (PLATFORM_SUPPORT_TRANSPORT)
         PRIVATE ${REFAPP_SRC}/systems/TransportSystem.cpp)
 
     if (PLATFORM_SUPPORT_UDS)
+        # Shared UDS overlay sources (used by both OpenBSW demo and FLXC1000)
         target_sources(
             app.sovdDemo
             PRIVATE
-                # Demo overlay UdsSystem (replaces the upstream one)
-                ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/systems/UdsSystem.cpp
-                # Upstream ReadIdentifierPot (unchanged)
                 ${REFAPP_SRC}/uds/ReadIdentifierPot.cpp
-                # Demo overlay sources
-                ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/uds/ReadIdentifierSimulated.cpp
-                ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/uds/DtcSimulator.cpp)
+                ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/uds/ReadIdentifierSimulated.cpp)
+
+        # ECU-specific sources
+        if (USE_FLXC1000_ECU)
+            message(STATUS "*** Building FLXC1000 ECU simulation ***")
+            target_sources(
+                app.sovdDemo
+                PRIVATE
+                    ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/systems/Flxc1000UdsSystem.cpp
+                    ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/uds/Flxc1000Simulator.cpp)
+            target_compile_definitions(app.sovdDemo PRIVATE USE_FLXC1000_ECU=1)
+        else ()
+            message(STATUS "*** Building OpenBSW demo ECU simulation ***")
+            target_sources(
+                app.sovdDemo
+                PRIVATE
+                    ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/systems/UdsSystem.cpp
+                    ${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/src/uds/DtcSimulator.cpp)
+        endif ()
     endif ()
 endif ()
 
@@ -136,9 +145,7 @@ endif ()
 
 set_target_properties(app.sovdDemo PROPERTIES SUFFIX ".elf")
 
-# --- Compile definitions (mirror OpenBSW root scope) -------------------------
-# OpenBSW sets these via add_compile_definitions() at directory scope, which
-# only applies within its own subdirectory.  We must propagate them explicitly.
+# --- Compile definitions -----------------------------------------------------
 target_compile_definitions(app.sovdDemo PRIVATE SUPPORT_FREERTOS)
 get_cmake_property(_all_vars VARIABLES)
 foreach (var ${_all_vars})
@@ -150,14 +157,23 @@ foreach (var ${_all_vars})
 endforeach ()
 
 # --- Include directories -----------------------------------------------------
-# Overlay FIRST so that our UdsSystem.h / DtcSimulator.h etc. take precedence.
+# Overlay FIRST so our headers take precedence over upstream
 target_include_directories(
     app.sovdDemo
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/app/include"
         "${REFAPP_INC}")
 
-# --- Link libraries (mirrors app.referenceApp exactly) -----------------------
+# For FLXC1000, also override appConfig.h (ECU logical address) and TransportConfiguration
+if (USE_FLXC1000_ECU)
+    target_include_directories(
+        app.sovdDemo
+        BEFORE PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/configuration/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/openbsw-overlay/transportConfiguration/include")
+endif ()
+
+# --- Link libraries ----------------------------------------------------------
 target_link_libraries(
     app.sovdDemo
     PRIVATE uds_dtc_overlay

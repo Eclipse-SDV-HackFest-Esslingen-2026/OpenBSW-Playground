@@ -10,19 +10,14 @@ an optional drop-in replacement for the Python stub CDA in the SOVD demo.
 
 ## Architecture
 
-```
-┌──────────────────┐      DoIP :13400      ┌──────────────────┐
-│   OpenBSW ECU    │◄═══════════════════►│   OpenSOVD CDA   │
-│  192.168.0.201   │                       │  192.168.0.10    │
-│  UDS addr 0x002A │                       │  Rust / axum     │
-└──────────────────┘                       └────────┬─────────┘
-                                                    │ SOVD REST :8080
-                                                    │ /vehicle/v15/...
-                                                    ▼
-                                           ┌──────────────────┐
-                                           │     Grafana      │
-                                           │  192.168.0.100   │
-                                           └──────────────────┘
+```mermaid
+flowchart LR
+  ecu["OpenBSW ECU<br/>192.168.0.201<br/>UDS addr 0x002A"]
+  cda["OpenSOVD CDA<br/>192.168.0.10<br/>Rust / axum"]
+  grafana["Grafana<br/>192.168.0.100"]
+
+  ecu <-->|DoIP :13400| cda
+  cda -->|SOVD REST :8080<br/>/vehicle/v15/...| grafana
 ```
 
 ## Key Design Choices

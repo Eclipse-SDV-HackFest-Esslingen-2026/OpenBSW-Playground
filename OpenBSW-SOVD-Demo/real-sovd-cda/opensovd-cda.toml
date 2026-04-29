@@ -22,6 +22,10 @@ gateway_port = 13400
 send_diagnostic_message_ack = false
 send_timeout_ms = 5000
 
+[security]
+# Disable security checks for demo/development
+enabled = false
+
 [logging]
 [logging.otel]
 enabled = false

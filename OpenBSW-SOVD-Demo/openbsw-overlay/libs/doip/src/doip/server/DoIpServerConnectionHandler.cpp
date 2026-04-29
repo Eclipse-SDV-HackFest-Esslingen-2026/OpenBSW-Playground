@@ -141,7 +141,7 @@ void DoIpServerConnectionHandler::startAliveCheck()
             _state,
             _aliveCheckPending);
         _aliveCheckPending = true;
-        IDoIpSendJob* const job
+        StaticPayloadSendJobType* const job
             = allocateSendJob(DoIpConstants::PayloadTypes::ALIVE_CHECK_REQUEST, 0U, false);
         if (job != nullptr)
         {
@@ -208,7 +208,7 @@ DoIpServerConnectionHandler::headerReceivedRoutingActivationRequest(DoIpHeader c
         return HeaderReceivedContinuation{IDoIpConnection::PayloadDiscardedCallbackType()};
     }
     return _connection.receivePayload(
-               ::estd::slice<uint8_t>(_readBuffer).subslice(header.payloadLength),
+               ::etl::span<uint8_t>(_readBuffer).subspan(0U, header.payloadLength),
                IDoIpConnection::PayloadReceivedCallbackType::create<
                    DoIpServerConnectionHandler,
                    &DoIpServerConnectionHandler::routingActivationRequestReceived>(*this))
@@ -225,7 +225,7 @@ DoIpServerConnectionHandler::headerReceivedAliveCheckResponse(DoIpHeader const& 
         return HeaderReceivedContinuation{IDoIpConnection::PayloadDiscardedCallbackType()};
     }
     return _connection.receivePayload(
-               ::estd::slice<uint8_t>(_readBuffer).subslice(2U),
+               ::etl::span<uint8_t>(_readBuffer).subspan(0U, 2U),
                IDoIpConnection::PayloadReceivedCallbackType::create<
                    DoIpServerConnectionHandler,
                    &DoIpServerConnectionHandler::aliveCheckResponseReceived>(*this))
@@ -277,6 +277,21 @@ DoIpServerConnectionHandler::headerReceived(DoIpHeader const& header)
         {
             return headerReceivedAliveCheckResponse(header);
         }
+        case DoIpConstants::PayloadTypes::ALIVE_CHECK_REQUEST:
+        {
+            // Tester is checking if we're alive - respond with AliveCheckResponse
+            // Payload is 2 bytes: our source address (ECU logical address)
+            StaticPayloadSendJobType* const job
+                = allocateSendJob(DoIpConstants::PayloadTypes::ALIVE_CHECK_RESPONSE, 2U, false);
+            if (job != nullptr)
+            {
+                ::etl::span<uint8_t> payload      = job->accessPayloadBuffer();
+                payload.take<::etl::be_uint16_t>() = _logicalEntityAddress;
+                (void)sendOrReleaseMessage(*job);
+            }
+            _connection.endReceiveMessage(IDoIpConnection::PayloadDiscardedCallbackType());
+            return HeaderReceivedContinuation{IDoIpConnectionHandler::HandledByThisHandler{}};
+        }
         case DoIpConstants::PayloadTypes::NEGATIVE_ACK:
         {
             return headerReceivedNegativeAck(header);
@@ -298,15 +313,16 @@ DoIpServerConnectionHandler::headerReceived(DoIpHeader const& header)
 void DoIpServerConnectionHandler::execute() { timerExpired(); }
 
 void DoIpServerConnectionHandler::routingActivationRequestReceived(
-    ::estd::slice<uint8_t const> payload)
+    ::etl::span<uint8_t const> const payload)
 {
-    uint16_t const sourceAddress = ::estd::memory::take<::estd::be_uint16_t>(payload);
-    uint8_t const activationType = ::estd::memory::take<uint8_t>(payload);
-    (void)payload.advance(4);
-    ::estd::optional<uint32_t> oemField;
-    if (payload.size() == 4) // if message contains VM-specific data
+    ::etl::span<uint8_t const> remainingPayload(payload);
+    uint16_t const sourceAddress = remainingPayload.take<::etl::be_uint16_t const>();
+    uint8_t const activationType = remainingPayload.take<uint8_t const>();
+    (void)remainingPayload.advance(4);
+    ::etl::optional<uint32_t> oemField;
+    if (remainingPayload.size() == 4U) // if message contains VM-specific data
     {
-        oemField = ::estd::memory::take<::estd::be_uint32_t>(payload);
+        oemField = remainingPayload.take<::etl::be_uint32_t const>();
     }
     auto const localEndpoint  = getLocalEndpoint();
     auto const remoteEndpoint = getRemoteEndpoint();
@@ -347,9 +363,9 @@ void DoIpServerConnectionHandler::routingActivationRequestReceived(
 }
 
 void DoIpServerConnectionHandler::aliveCheckResponseReceived(
-    ::estd::slice<uint8_t const> const payload)
+    ::etl::span<uint8_t const> const payload)
 {
-    uint16_t const sourceAddress = ::estd::read_be<uint16_t>(payload.data());
+    uint16_t const sourceAddress = ::etl::be_uint16_t(payload.data());
 
     bool const isExpectedAddress = (sourceAddress == _sourceAddress);
     if (_aliveCheckPending)
@@ -467,15 +483,18 @@ void DoIpServerConnectionHandler::sendRoutingActivationResponse(
         sourceAddress,
         responseCode,
         closeAfterSend);
-    StaticPayloadSendJobType* const job = allocateSendJob(
-        DoIpConstants::PayloadTypes::ROUTING_ACTIVATION_RESPONSE, 9U, closeAfterSend);
+    constexpr size_t ROUTING_ACTIVATION_RESPONSE_PAYLOAD_LENGTH = 9U;
+    StaticPayloadSendJobType* const job                         = allocateSendJob(
+        DoIpConstants::PayloadTypes::ROUTING_ACTIVATION_RESPONSE,
+        ROUTING_ACTIVATION_RESPONSE_PAYLOAD_LENGTH,
+        closeAfterSend);
     if (job != nullptr)
     {
-        ::estd::slice<uint8_t> buffer                     = job->accessPayloadBuffer();
-        ::estd::memory::take<::estd::be_uint16_t>(buffer) = sourceAddress;
-        ::estd::memory::take<::estd::be_uint16_t>(buffer) = _logicalEntityAddress;
-        ::estd::memory::take<uint8_t>(buffer)             = responseCode;
-        ::estd::memory::set(buffer.subslice(4), 0U);
+        ::etl::span<uint8_t> buffer       = job->accessPayloadBuffer();
+        buffer.take<::etl::be_uint16_t>() = sourceAddress;
+        buffer.take<::etl::be_uint16_t>() = _logicalEntityAddress;
+        buffer.take<uint8_t>()            = responseCode;
+        ::etl::mem_set(buffer.begin(), 4U, static_cast<uint8_t>(0U));
         (void)sendOrReleaseMessage(*job);
     }
     else
@@ -521,7 +540,7 @@ void DoIpServerConnectionHandler::sendNack(uint8_t const nackCode, bool const cl
     }
 }
 
-bool DoIpServerConnectionHandler::sendOrReleaseMessage(IDoIpSendJob& job)
+bool DoIpServerConnectionHandler::sendOrReleaseMessage(DoIpStaticPayloadSendJob& job)
 {
     if (!_connection.sendMessage(job))
     {
@@ -554,11 +573,12 @@ DoIpServerConnectionHandler::StaticPayloadSendJobType* DoIpServerConnectionHandl
 
     // RAII mutex
     DoIpLock const lock;
-    if (_sendJobPool.empty())
+    if (_sendJobPool.full())
     {
         return nullptr;
     }
-    return &_sendJobPool.allocate<StaticPayloadSendJobType>().construct(
+
+    return _sendJobPool.create(
         static_cast<uint8_t>(_protocolVersion),
         payloadType,
         payloadLength,
@@ -571,7 +591,8 @@ DoIpServerConnectionHandler::StaticPayloadSendJobType* DoIpServerConnectionHandl
                     *this));
 }
 
-void DoIpServerConnectionHandler::releaseSendJobAndClose(IDoIpSendJob& job, bool const success)
+void DoIpServerConnectionHandler::releaseSendJobAndClose(
+    DoIpStaticPayloadSendJob& job, bool const success)
 {
     Logger::warn(
         DOIP,
@@ -584,11 +605,12 @@ void DoIpServerConnectionHandler::releaseSendJobAndClose(IDoIpSendJob& job, bool
     close();
 }
 
-void DoIpServerConnectionHandler::releaseSendJob(IDoIpSendJob& job, bool const /*success*/)
+void DoIpServerConnectionHandler::releaseSendJob(
+    DoIpStaticPayloadSendJob& job, bool const /*success*/)
 {
     // RAII mutex
     DoIpLock const lock;
-    _sendJobPool.release(job);
+    _sendJobPool.destroy(&job);
 }
 
 void DoIpServerConnectionHandler::suspendSending() { return _connection.suspendSending(); }

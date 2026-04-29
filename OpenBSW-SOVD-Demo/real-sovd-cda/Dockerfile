@@ -114,8 +114,9 @@ COPY --from=builder /tmp/opensovd-cda /app/opensovd-cda
 # --- Final: select based on USE_PREBUILT ---
 FROM bin-prebuilt-${USE_PREBUILT} AS final
 
-# Copy the OpenBSW MDD file and config
-COPY real-sovd-cda/odx-gen/OpenBSW.mdd /app/odx/OpenBSW.mdd
+# Copy ALL MDD files and base ODX definitions
+COPY real-sovd-cda/odx-gen/*.mdd /app/odx/
+COPY real-sovd-cda/odx-gen/base/ /app/odx/base/
 COPY real-sovd-cda/opensovd-cda.toml /app/opensovd-cda.toml
 COPY --chmod=755 real-sovd-cda/entrypoint.sh /app/entrypoint.sh
 

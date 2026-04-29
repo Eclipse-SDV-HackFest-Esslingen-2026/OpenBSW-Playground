@@ -2,6 +2,18 @@
 
 #pragma once
 
+// When USE_FLXC1000_ECU is defined, alias UdsSystem to Flxc1000UdsSystem
+#ifdef USE_FLXC1000_ECU
+
+#include "systems/Flxc1000UdsSystem.h"
+
+namespace uds
+{
+using UdsSystem = Flxc1000UdsSystem;
+} // namespace uds
+
+#else // Default OpenBSW demo ECU
+
 #include <async/Async.h>
 #include <async/IRunnable.h>
 #include <etl/singleton_base.h>
@@ -109,3 +121,5 @@ private:
     ::async::TimeoutType _dtcSimTimeout;
 };
 } // namespace uds
+
+#endif // USE_FLXC1000_ECU

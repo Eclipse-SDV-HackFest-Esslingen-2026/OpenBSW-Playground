@@ -39,6 +39,9 @@ ECU_ELF="$BUILD_DIR/Release/app.sovdDemo.elf"
 # CDA mode: "stub" (Python) or "real" (Rust/OpenSOVD)
 CDA_MODE="stub"
 
+# ECU mode: "" (default OpenBSW demo) or "flxc1000" (FLXC1000 ECU)
+ECU_MODE=""
+
 # Network config (must match OpenBSW ethConfig.h)
 TAP_IF="tap0"
 HOST_IP="192.168.0.10"
@@ -502,6 +505,45 @@ setup_network() {
     fi
 }
 
+ensure_ninja() {
+    if command -v ninja >/dev/null 2>&1; then
+        return
+    fi
+
+    warn "Ninja not found, installing ninja-build..."
+    sudo apt-get update -qq
+    sudo apt-get install -y ninja-build >/dev/null
+
+    if command -v ninja >/dev/null 2>&1; then
+        ok "Ninja installed: $(command -v ninja)"
+    else
+        err "Failed to install ninja-build"
+        exit 1
+    fi
+}
+
+needs_reconfigure() {
+    local cache_file="$BUILD_DIR/CMakeCache.txt"
+
+    if [[ ! -d "$BUILD_DIR" ]]; then
+        return 0
+    fi
+
+    if [[ ! -f "$cache_file" ]]; then
+        return 0
+    fi
+
+    if grep -q 'CMAKE_MAKE_PROGRAM:FILEPATH=CMAKE_MAKE_PROGRAM-NOTFOUND' "$cache_file"; then
+        return 0
+    fi
+
+    if [[ ! -f "$BUILD_DIR/build.ninja" ]] && [[ ! -f "$BUILD_DIR/build-Release.ninja" ]]; then
+        return 0
+    fi
+
+    return 1
+}
+
 # ------------------------------------------------------------------
 # 2. Build OpenBSW
 # ------------------------------------------------------------------
@@ -509,8 +551,17 @@ build_openbsw() {
     log "Building SOVD Demo overlay..."
     cd "$REPO_ROOT"
 
-    if [[ ! -d "$BUILD_DIR" ]]; then
-        cmake --preset posix-freertos-sovd 2>&1 | tail -5
+    ensure_ninja
+
+    if needs_reconfigure; then
+        warn "Refreshing CMake build directory..."
+        rm -rf "$BUILD_DIR"
+        if [[ "$ECU_MODE" == "flxc1000" ]]; then
+            log "Building with FLXC1000 ECU simulation..."
+            cmake --preset posix-freertos-sovd -DUSE_FLXC1000_ECU=ON 2>&1 | tail -5
+        else
+            cmake --preset posix-freertos-sovd 2>&1 | tail -5
+        fi
     fi
 
     cmake --build "$BUILD_DIR" 2>&1 | tail -5
@@ -786,6 +837,20 @@ case "${1:-}" in
         log "Real SOVD CDA (Eclipse OpenSOVD) is running."
         log "API base URL: http://localhost:$SOVD_PORT/vehicle/v15/"
         log "For live monitoring: $0 --live  (tmux split) or  $0 --status"
+        ;;
+    --flxc1000)
+        ECU_MODE="flxc1000"
+        CDA_MODE="real"
+        DEPLOY_MODE="local"
+        detect_environment
+        setup_network
+        build_openbsw
+        start_ecu
+        start_real_cda
+        start_grafana
+        show_status_once
+        log "FLXC1000 ECU simulation with real SOVD CDA is running."
+        log "API: http://localhost:$SOVD_PORT/vehicle/v15/"
         ;;
     --codespaces)
         DEPLOY_MODE="codespaces"
