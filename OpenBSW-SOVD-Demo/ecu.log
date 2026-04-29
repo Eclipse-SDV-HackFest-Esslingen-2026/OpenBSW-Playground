@@ -3818,3 +3818,233 @@ hello
 1054294: RefApp: DEMO: DEBUG: Sending frame 1051
 1055294: RefApp: DEMO: DEBUG: Sending frame 1052
 1056294: RefApp: DEMO: DEBUG: Sending frame 1053
+1057294: RefApp: DEMO: DEBUG: Sending frame 1054
+1058294: RefApp: DEMO: DEBUG: Sending frame 1055
+1059294: RefApp: DEMO: DEBUG: Sending frame 1056
+1060294: RefApp: DEMO: DEBUG: Sending frame 1057
+1061107: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1061107: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1061107: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+1061107: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+1061149: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+1061294: RefApp: DEMO: DEBUG: Sending frame 1058
+1062294: RefApp: DEMO: DEBUG: Sending frame 1059
+1063294: RefApp: DEMO: DEBUG: Sending frame 1060
+1064294: RefApp: DEMO: DEBUG: Sending frame 1061
+1065294: RefApp: DEMO: DEBUG: Sending frame 1062
+1066294: RefApp: DEMO: DEBUG: Sending frame 1063
+1067294: RefApp: DEMO: DEBUG: Sending frame 1064
+1068294: RefApp: DEMO: DEBUG: Sending frame 1065
+1069294: RefApp: DEMO: DEBUG: Sending frame 1066
+1070294: RefApp: DEMO: DEBUG: Sending frame 1067
+1071294: RefApp: DEMO: DEBUG: Sending frame 1068
+1072294: RefApp: DEMO: DEBUG: Sending frame 1069
+1073294: RefApp: DEMO: DEBUG: Sending frame 1070
+1074294: RefApp: DEMO: DEBUG: Sending frame 1071
+1075294: RefApp: DEMO: DEBUG: Sending frame 1072
+1076294: RefApp: DEMO: DEBUG: Sending frame 1073
+1077294: RefApp: DEMO: DEBUG: Sending frame 1074
+1078294: RefApp: DEMO: DEBUG: Sending frame 1075
+1079294: RefApp: DEMO: DEBUG: Sending frame 1076
+1080297: RefApp: DEMO: DEBUG: Sending frame 1077
+1081304: RefApp: DEMO: DEBUG: Sending frame 1078
+1082304: RefApp: DEMO: DEBUG: Sending frame 1079
+1083314: RefApp: DEMO: DEBUG: Sending frame 1080
+1084314: RefApp: DEMO: DEBUG: Sending frame 1081
+1085315: RefApp: DEMO: DEBUG: Sending frame 1082
+1086324: RefApp: DEMO: DEBUG: Sending frame 1083
+1087324: RefApp: DEMO: DEBUG: Sending frame 1084
+1088324: RefApp: DEMO: DEBUG: Sending frame 1085
+1089324: RefApp: DEMO: DEBUG: Sending frame 1086
+1090325: RefApp: DEMO: DEBUG: Sending frame 1087
+1091108: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1091108: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1091108: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+1091108: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+1091109: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+1091334: RefApp: DEMO: DEBUG: Sending frame 1088
+1092335: RefApp: DEMO: DEBUG: Sending frame 1089
+1093335: RefApp: DEMO: DEBUG: Sending frame 1090
+1094344: RefApp: DEMO: DEBUG: Sending frame 1091
+1095344: RefApp: DEMO: DEBUG: Sending frame 1092
+1096344: RefApp: DEMO: DEBUG: Sending frame 1093
+1097344: RefApp: DEMO: DEBUG: Sending frame 1094
+1098344: RefApp: DEMO: DEBUG: Sending frame 1095
+1099344: RefApp: DEMO: DEBUG: Sending frame 1096
+1100344: RefApp: DEMO: DEBUG: Sending frame 1097
+1101344: RefApp: DEMO: DEBUG: Sending frame 1098
+1102344: RefApp: DEMO: DEBUG: Sending frame 1099
+1103344: RefApp: DEMO: DEBUG: Sending frame 1100
+1104346: RefApp: DEMO: DEBUG: Sending frame 1101
+1105356: RefApp: DEMO: DEBUG: Sending frame 1102
+1106364: RefApp: DEMO: DEBUG: Sending frame 1103
+1107364: RefApp: DEMO: DEBUG: Sending frame 1104
+1108364: RefApp: DEMO: DEBUG: Sending frame 1105
+1109364: RefApp: DEMO: DEBUG: Sending frame 1106
+1110364: RefApp: DEMO: DEBUG: Sending frame 1107
+1111364: RefApp: DEMO: DEBUG: Sending frame 1108
+1112364: RefApp: DEMO: DEBUG: Sending frame 1109
+1113364: RefApp: DEMO: DEBUG: Sending frame 1110
+1114365: RefApp: DEMO: DEBUG: Sending frame 1111
+1115374: RefApp: DEMO: DEBUG: Sending frame 1112
+1116374: RefApp: DEMO: DEBUG: Sending frame 1113
+1117374: RefApp: DEMO: DEBUG: Sending frame 1114
+1118374: RefApp: DEMO: DEBUG: Sending frame 1115
+1119374: RefApp: DEMO: DEBUG: Sending frame 1116
+1120374: RefApp: DEMO: DEBUG: Sending frame 1117
+1121111: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1121111: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1121111: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+1121111: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+1121112: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+1121374: RefApp: DEMO: DEBUG: Sending frame 1118
+1122378: RefApp: DEMO: DEBUG: Sending frame 1119
+1123384: RefApp: DEMO: DEBUG: Sending frame 1120
+1124384: RefApp: DEMO: DEBUG: Sending frame 1121
+1125384: RefApp: DEMO: DEBUG: Sending frame 1122
+1126386: RefApp: DEMO: DEBUG: Sending frame 1123
+1127394: RefApp: DEMO: DEBUG: Sending frame 1124
+1128394: RefApp: DEMO: DEBUG: Sending frame 1125
+1129394: RefApp: DEMO: DEBUG: Sending frame 1126
+1130394: RefApp: DEMO: DEBUG: Sending frame 1127
+1131394: RefApp: DEMO: DEBUG: Sending frame 1128
+1132394: RefApp: DEMO: DEBUG: Sending frame 1129
+1133394: RefApp: DEMO: DEBUG: Sending frame 1130
+1134395: RefApp: DEMO: DEBUG: Sending frame 1131
+1135404: RefApp: DEMO: DEBUG: Sending frame 1132
+1136404: RefApp: DEMO: DEBUG: Sending frame 1133
+1137404: RefApp: DEMO: DEBUG: Sending frame 1134
+1138404: RefApp: DEMO: DEBUG: Sending frame 1135
+1139404: RefApp: DEMO: DEBUG: Sending frame 1136
+1140404: RefApp: DEMO: DEBUG: Sending frame 1137
+1141404: RefApp: DEMO: DEBUG: Sending frame 1138
+1142404: RefApp: DEMO: DEBUG: Sending frame 1139
+1143411: RefApp: DEMO: DEBUG: Sending frame 1140
+1144414: RefApp: DEMO: DEBUG: Sending frame 1141
+1145414: RefApp: DEMO: DEBUG: Sending frame 1142
+1146414: RefApp: DEMO: DEBUG: Sending frame 1143
+1147414: RefApp: DEMO: DEBUG: Sending frame 1144
+1148414: RefApp: DEMO: DEBUG: Sending frame 1145
+1149414: RefApp: DEMO: DEBUG: Sending frame 1146
+1150414: RefApp: DEMO: DEBUG: Sending frame 1147
+1151113: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1151113: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1151113: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+1151113: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+1151114: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+1151414: RefApp: DEMO: DEBUG: Sending frame 1148
+1152414: RefApp: DEMO: DEBUG: Sending frame 1149
+1153417: RefApp: DEMO: DEBUG: Sending frame 1150
+1153423: RefApp: [93mTPROUTER[0m: DEBUG: TransportRouterSimple::getTransportMessage : sourceAddress 0x0, targetId 0x1000
+1153423: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler::getTransportMessage(ETH_0)(0x0000 -> 0x1000), returned 700)
+1153423: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0)(0x0000 -> 0x1000): Message received.
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa18c8, 8) no data is pending!
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa18c8 size:8 buffersize:2912
+1153423: RefApp: [93mUDS[0m: DEBUG: Opening incoming connection 0x0 --> 0x1000, service 0x19
+1153423: RefApp: [93mUDS[0m: DEBUG: Accepted 0x19, current session: 0x1
+1153423: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x19
+1153423: RefApp: [93mUDS[0m: DEBUG: Sent response 0xff, tp 0
+1153423: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::send(0x1000 -> 0x0000)
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2904
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 4) no data is pending!
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:4 buffersize:2896
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa62bb, 27) no data is pending!
+1153423: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa62bb size:27 buffersize:2892
+1153423: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::releaseConnections()
+1153426: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 16);
+1153426: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 39);
+1153426: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0, 0x1000)::sendTransportMessageProcessed(): Sent successfully.
+1153426: RefApp: [93mUDS[0m: DEBUG: IncomingDiagConnection::terminate(): 0x0 --> 0x1000, service 0x19
+1153606: RefApp: [93mTPROUTER[0m: DEBUG: TransportRouterSimple::getTransportMessage : sourceAddress 0x0, targetId 0x1000
+1153606: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler::getTransportMessage(ETH_0)(0x0000 -> 0x1000), returned 700)
+1153606: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0)(0x0000 -> 0x1000): Message received.
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa18c8, 8) no data is pending!
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa18c8 size:8 buffersize:2912
+1153606: RefApp: [93mUDS[0m: DEBUG: Opening incoming connection 0x0 --> 0x1000, service 0x22
+1153606: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22, current session: 0x1
+1153606: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22
+1153606: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22f200, current session: 0x1
+1153606: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22F200
+1153606: RefApp: [93mUDS[0m: DEBUG: Sent response 0xff, tp 0
+1153606: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::send(0x1000 -> 0x0000)
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2904
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 4) no data is pending!
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:4 buffersize:2896
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa62bb, 7) no data is pending!
+1153606: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa62bb size:7 buffersize:2892
+1153606: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::releaseConnections()
+1153607: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 35);
+1153607: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0, 0x1000)::sendTransportMessageProcessed(): Sent successfully.
+1153607: RefApp: [93mUDS[0m: DEBUG: IncomingDiagConnection::terminate(): 0x0 --> 0x1000, service 0x22
+1153805: RefApp: [93mTPROUTER[0m: DEBUG: TransportRouterSimple::getTransportMessage : sourceAddress 0x0, targetId 0x1000
+1153805: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler::getTransportMessage(ETH_0)(0x0000 -> 0x1000), returned 700)
+1153805: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0)(0x0000 -> 0x1000): Message received.
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa18c8, 8) no data is pending!
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa18c8 size:8 buffersize:2912
+1153805: RefApp: [93mUDS[0m: DEBUG: Opening incoming connection 0x0 --> 0x1000, service 0x22
+1153805: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22, current session: 0x1
+1153805: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22
+1153805: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22f190, current session: 0x1
+1153805: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22F190
+1153805: RefApp: [93mUDS[0m: DEBUG: Sent response 0xff, tp 0
+1153805: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::send(0x1000 -> 0x0000)
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2904
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 4) no data is pending!
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:4 buffersize:2896
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa62bb, 20) no data is pending!
+1153805: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa62bb size:20 buffersize:2892
+1153805: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::releaseConnections()
+1153806: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 48);
+1153806: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0, 0x1000)::sendTransportMessageProcessed(): Sent successfully.
+1153806: RefApp: [93mUDS[0m: DEBUG: IncomingDiagConnection::terminate(): 0x0 --> 0x1000, service 0x22
+1154424: RefApp: DEMO: DEBUG: Sending frame 1151
+1155424: RefApp: DEMO: DEBUG: Sending frame 1152
+1156424: RefApp: DEMO: DEBUG: Sending frame 1153
+1157424: RefApp: DEMO: DEBUG: Sending frame 1154
+1158424: RefApp: DEMO: DEBUG: Sending frame 1155
+1159424: RefApp: DEMO: DEBUG: Sending frame 1156
+1160424: RefApp: DEMO: DEBUG: Sending frame 1157
+1161424: RefApp: DEMO: DEBUG: Sending frame 1158
+1162424: RefApp: DEMO: DEBUG: Sending frame 1159
+1163424: RefApp: DEMO: DEBUG: Sending frame 1160
+1164424: RefApp: DEMO: DEBUG: Sending frame 1161
+1165424: RefApp: DEMO: DEBUG: Sending frame 1162
+1166424: RefApp: DEMO: DEBUG: Sending frame 1163
+1167424: RefApp: DEMO: DEBUG: Sending frame 1164
+1168424: RefApp: DEMO: DEBUG: Sending frame 1165
+1169424: RefApp: DEMO: DEBUG: Sending frame 1166
+1170424: RefApp: DEMO: DEBUG: Sending frame 1167
+1171424: RefApp: DEMO: DEBUG: Sending frame 1168
+1172424: RefApp: DEMO: DEBUG: Sending frame 1169
+1173424: RefApp: DEMO: DEBUG: Sending frame 1170
+1174424: RefApp: DEMO: DEBUG: Sending frame 1171
+1175424: RefApp: DEMO: DEBUG: Sending frame 1172
+1176424: RefApp: DEMO: DEBUG: Sending frame 1173
+1177424: RefApp: DEMO: DEBUG: Sending frame 1174
+1178424: RefApp: DEMO: DEBUG: Sending frame 1175
+1179424: RefApp: DEMO: DEBUG: Sending frame 1176
+1180424: RefApp: DEMO: DEBUG: Sending frame 1177
+1181424: RefApp: DEMO: DEBUG: Sending frame 1178
+1182424: RefApp: DEMO: DEBUG: Sending frame 1179
+1183424: RefApp: DEMO: DEBUG: Sending frame 1180
+1183807: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+1183807: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+1183807: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+1183807: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+1183848: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+1184426: RefApp: DEMO: DEBUG: Sending frame 1181
+1185434: RefApp: DEMO: DEBUG: Sending frame 1182
+1186434: RefApp: DEMO: DEBUG: Sending frame 1183
+1187434: RefApp: DEMO: DEBUG: Sending frame 1184
+1188434: RefApp: DEMO: DEBUG: Sending frame 1185
+1189461: RefApp: DEMO: DEBUG: Sending frame 1186
+1190464: RefApp: DEMO: DEBUG: Sending frame 1187
