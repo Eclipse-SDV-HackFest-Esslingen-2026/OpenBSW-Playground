@@ -5,348 +5,40 @@
   "graphTooltip": 1,
   "id": null,
   "links": [],
-  "liveNow": true,
+  "liveNow": false,
   "panels": [
     {
       "title": "",
       "type": "text",
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
       "id": 100,
       "options": {
         "mode": "html",
-        "content": "<div style=\"text-align:center;padding:4px 0\"><h2 style=\"margin:0;color:#FFD700\">⚡ FLXC1000 Flux Capacitor ECU — Real SOVD Dashboard</h2><span style=\"color:#aaa\">Live data via Eclipse OpenSOVD CDA → DoIP/UDS → FLXC1000 ECU</span></div>"
+        "content": "<div style=\"text-align:center;padding:8px 0\"><h2 style=\"margin:0;color:#FFD700\">⚡ FLXC1000 Flux Capacitor ECU</h2><span style=\"color:#aaa\">Use the SOVD API directly or demo.sh --status for live data</span></div>"
       }
     },
     {
-      "title": "Flux Capacitor Power",
-      "type": "gauge",
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 2 },
+      "title": "SOVD API Endpoints",
+      "type": "text",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 3 },
       "id": 1,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000/data/FluxCapacitorPowerConsumption",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "data",
-          "columns": [
-            { "selector": "PowerConsumption", "text": "value", "type": "number" }
-          ]
-        }
-      ],
-      "transformations": [],
-      "fieldConfig": {
-        "defaults": {
-          "min": 0,
-          "max": 2100,
-          "unit": "watt",
-          "displayName": "Power (scaled: 1210 = 1.21 GW)",
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 500 },
-              { "color": "yellow", "value": 1000 },
-              { "color": "orange", "value": 1500 },
-              { "color": "red", "value": 1800 }
-            ]
-          }
-        }
-      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^value$/" },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "orientation": "auto"
+        "mode": "markdown",
+        "content": "### Data Endpoints\n\n```bash\n# Flux Capacitor Power\ncurl -sH \"Authorization: Bearer <token>\" \\\n  http://localhost:8080/vehicle/v15/components/flxc1000/data/FluxCapacitorPowerConsumption\n\n# VIN\ncurl -sH \"Authorization: Bearer <token>\" \\\n  http://localhost:8080/vehicle/v15/components/flxc1000/data/VINDataIdentifier\n\n# Faults/DTCs\ncurl -sH \"Authorization: Bearer <token>\" \\\n  http://localhost:8080/vehicle/v15/components/flxc1000/faults\n```"
       }
     },
     {
-      "title": "VIN",
-      "type": "stat",
-      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 2 },
+      "title": "ECU Information",
+      "type": "text",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 3 },
       "id": 2,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000/data/VINDataIdentifier",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "data",
-          "columns": [
-            { "selector": "VIN", "text": "VIN", "type": "string" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "fixed", "fixedColor": "text" },
-          "unit": "string"
-        }
-      },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center"
-      }
-    },
-    {
-      "title": "ECU Identification",
-      "type": "stat",
-      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 7 },
-      "id": 3,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000/data/Identification",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "data",
-          "columns": [
-            { "selector": "Identification", "text": "ID", "type": "string" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "fixed", "fixedColor": "text" }
-        }
-      },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center"
-      }
-    },
-    {
-      "title": "DTCs (Diagnostic Trouble Codes)",
-      "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 12 },
-      "id": 4,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000/faults",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "items",
-          "columns": [
-            { "selector": "code", "text": "DTC Code", "type": "string" },
-            { "selector": "fault_name", "text": "Name", "type": "string" },
-            { "selector": "status.test_failed", "text": "Active", "type": "boolean" },
-            { "selector": "status.confirmed_dtc", "text": "Confirmed", "type": "boolean" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Active" },
-            "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": { "type": "color-background", "mode": "basic" }
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  { "type": "value", "options": { "true": { "color": "red", "index": 0, "text": "🔴 Active" } } },
-                  { "type": "value", "options": { "false": { "color": "green", "index": 1, "text": "🟢 OK" } } }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Confirmed" },
-            "properties": [
-              {
-                "id": "custom.cellOptions",
-                "value": { "type": "color-background", "mode": "basic" }
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  { "type": "value", "options": { "true": { "color": "orange", "index": 0, "text": "🟠 Yes" } } },
-                  { "type": "value", "options": { "false": { "color": "blue", "index": 1, "text": "⚪ No" } } }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm"
-      }
-    },
-    {
-      "title": "ECU Connection Status",
-      "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 22 },
-      "id": 5,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "variant",
-          "columns": [
-            { "selector": "state", "text": "State", "type": "string" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "Online": { "color": "green", "index": 0, "text": "🟢 Online" } } },
-            { "type": "value", "options": { "Offline": { "color": "red", "index": 1, "text": "🔴 Offline" } } }
-          ],
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null }
-            ]
-          }
-        }
-      },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
-        "textMode": "value",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center"
-      }
-    },
-    {
-      "title": "ECU Logical Address",
-      "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 22 },
-      "id": 6,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "variant",
-          "columns": [
-            { "selector": "logical_address", "text": "Address", "type": "string" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "fixed", "fixedColor": "yellow" }
-        }
-      },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center"
-      }
-    },
-    {
-      "title": "Active Session",
-      "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 22 },
-      "id": 7,
-      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "SOVD-API" },
-      "targets": [
-        {
-          "refId": "A",
-          "type": "json",
-          "source": "url",
-          "url": "http://host.docker.internal:8080/vehicle/v15/components/flxc1000/data/ActiveDiagnosticSessionDataIdentifier",
-          "url_options": {
-            "method": "GET",
-            "headers": [
-              { "key": "Authorization", "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJncmFmYW5hIiwiZXhwIjoyMDAwMDAwMDAwfQ.AyjlfXQ3pwfJdhlJF2itPF5vL2xpa9V7j8azT1m593E" }
-            ]
-          },
-          "format": "table",
-          "root_selector": "data",
-          "columns": [
-            { "selector": "Session", "text": "Session", "type": "string" }
-          ]
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "1": { "text": "Default (0x01)" } } },
-            { "type": "value", "options": { "2": { "text": "Programming (0x02)" } } },
-            { "type": "value", "options": { "3": { "text": "Extended (0x03)" } } }
-          ],
-          "color": { "mode": "fixed", "fixedColor": "blue" }
-        }
-      },
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "" },
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center"
+        "mode": "markdown",
+        "content": "### FLXC1000 Configuration\n\n| Property | Value |\n|:---|:---|\n| **ECU Address** | 0x1000 |\n| **Variant** | FLXC1000_App_0101 |\n| **VIN** | WFLXC1000TIMEMACH |\n\n### DIDs\n- F100: Identification\n- F186: Session\n- F190: VIN\n- F200: FluxCapacitorPower\n\n### DTCs\n- 6 diagnostic trouble codes"
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 39,
   "tags": ["sovd", "flxc1000", "flux-capacitor"],
   "templating": { "list": [] },

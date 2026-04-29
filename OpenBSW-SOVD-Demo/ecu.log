@@ -2300,3 +2300,348 @@ hello
 204485: RefApp: DEMO: DEBUG: Sending frame 203
 205495: RefApp: DEMO: DEBUG: Sending frame 204
 206495: RefApp: DEMO: DEBUG: Sending frame 205
+207495: RefApp: DEMO: DEBUG: Sending frame 206
+208504: RefApp: DEMO: DEBUG: Sending frame 207
+209504: RefApp: DEMO: DEBUG: Sending frame 208
+210504: RefApp: DEMO: DEBUG: Sending frame 209
+211504: RefApp: DEMO: DEBUG: Sending frame 210
+212504: RefApp: DEMO: DEBUG: Sending frame 211
+213504: RefApp: DEMO: DEBUG: Sending frame 212
+214504: RefApp: DEMO: DEBUG: Sending frame 213
+215506: RefApp: DEMO: DEBUG: Sending frame 214
+216514: RefApp: DEMO: DEBUG: Sending frame 215
+217460: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+217460: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+217460: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+217460: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+217500: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+217514: RefApp: DEMO: DEBUG: Sending frame 216
+218514: RefApp: DEMO: DEBUG: Sending frame 217
+219514: RefApp: DEMO: DEBUG: Sending frame 218
+220515: RefApp: DEMO: DEBUG: Sending frame 219
+221519: RefApp: DEMO: DEBUG: Sending frame 220
+222526: RefApp: DEMO: DEBUG: Sending frame 221
+223527: RefApp: DEMO: DEBUG: Sending frame 222
+224536: RefApp: DEMO: DEBUG: Sending frame 223
+225544: RefApp: DEMO: DEBUG: Sending frame 224
+226544: RefApp: DEMO: DEBUG: Sending frame 225
+227544: RefApp: DEMO: DEBUG: Sending frame 226
+228544: RefApp: DEMO: DEBUG: Sending frame 227
+229544: RefApp: DEMO: DEBUG: Sending frame 228
+230544: RefApp: DEMO: DEBUG: Sending frame 229
+231544: RefApp: DEMO: DEBUG: Sending frame 230
+232544: RefApp: DEMO: DEBUG: Sending frame 231
+233547: RefApp: DEMO: DEBUG: Sending frame 232
+234554: RefApp: DEMO: DEBUG: Sending frame 233
+235554: RefApp: DEMO: DEBUG: Sending frame 234
+236559: RefApp: DEMO: DEBUG: Sending frame 235
+237564: RefApp: DEMO: DEBUG: Sending frame 236
+238564: RefApp: DEMO: DEBUG: Sending frame 237
+239567: RefApp: DEMO: DEBUG: Sending frame 238
+239881: RefApp: [93mTPROUTER[0m: DEBUG: TransportRouterSimple::getTransportMessage : sourceAddress 0x0, targetId 0x1000
+239881: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler::getTransportMessage(ETH_0)(0x0000 -> 0x1000), returned 700)
+239881: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0)(0x0000 -> 0x1000): Message received.
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa18c8, 8) no data is pending!
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa18c8 size:8 buffersize:2912
+239881: RefApp: [93mUDS[0m: DEBUG: Opening incoming connection 0x0 --> 0x1000, service 0x22
+239881: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22, current session: 0x1
+239881: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22
+239881: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22f186, current session: 0x1
+239881: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22F186
+239881: RefApp: [93mUDS[0m: DEBUG: Sent response 0xff, tp 0
+239881: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::send(0x1000 -> 0x0000)
+239881: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::releaseConnections()
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 16);
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 4) no data is pending!
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:4 buffersize:2912
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa62bb, 4) no data is pending!
+239881: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa62bb size:4 buffersize:2908
+239883: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 16);
+239883: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0, 0x1000)::sendTransportMessageProcessed(): Sent successfully.
+239884: RefApp: [93mUDS[0m: DEBUG: IncomingDiagConnection::terminate(): 0x0 --> 0x1000, service 0x22
+240005: RefApp: [93mTPROUTER[0m: DEBUG: TransportRouterSimple::getTransportMessage : sourceAddress 0x0, targetId 0x1000
+240005: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler::getTransportMessage(ETH_0)(0x0000 -> 0x1000), returned 700)
+240005: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0)(0x0000 -> 0x1000): Message received.
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa18c8, 8) no data is pending!
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa18c8 size:8 buffersize:2912
+240005: RefApp: [93mUDS[0m: DEBUG: Opening incoming connection 0x0 --> 0x1000, service 0x22
+240005: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22, current session: 0x1
+240005: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22
+240005: RefApp: [93mUDS[0m: DEBUG: Accepted 0x22f190, current session: 0x1
+240005: RefApp: [93mUDS[0m: DEBUG: Process diag job 0x22F190
+240005: RefApp: [93mUDS[0m: DEBUG: Sent response 0xff, tp 0
+240005: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::send(0x1000 -> 0x0000)
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2904
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 4) no data is pending!
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:4 buffersize:2896
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa62bb, 20) no data is pending!
+240005: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa62bb size:20 buffersize:2892
+240005: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportLayer::releaseConnections()
+240006: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 48);
+240006: RefApp: [92mDOIP[0m: DEBUG: DoIpServerTransportMessageHandler(ETH_0, 0x1000)::sendTransportMessageProcessed(): Sent successfully.
+240006: RefApp: [93mUDS[0m: DEBUG: IncomingDiagConnection::terminate(): 0x0 --> 0x1000, service 0x22
+240574: RefApp: DEMO: DEBUG: Sending frame 239
+241574: RefApp: DEMO: DEBUG: Sending frame 240
+242574: RefApp: DEMO: DEBUG: Sending frame 241
+243574: RefApp: DEMO: DEBUG: Sending frame 242
+244574: RefApp: DEMO: DEBUG: Sending frame 243
+245574: RefApp: DEMO: DEBUG: Sending frame 244
+246574: RefApp: DEMO: DEBUG: Sending frame 245
+247574: RefApp: DEMO: DEBUG: Sending frame 246
+248575: RefApp: DEMO: DEBUG: Sending frame 247
+249575: RefApp: DEMO: DEBUG: Sending frame 248
+250575: RefApp: DEMO: DEBUG: Sending frame 249
+251584: RefApp: DEMO: DEBUG: Sending frame 250
+252584: RefApp: DEMO: DEBUG: Sending frame 251
+253584: RefApp: DEMO: DEBUG: Sending frame 252
+254584: RefApp: DEMO: DEBUG: Sending frame 253
+255584: RefApp: DEMO: DEBUG: Sending frame 254
+256584: RefApp: DEMO: DEBUG: Sending frame 255
+257584: RefApp: DEMO: DEBUG: Sending frame 256
+258584: RefApp: DEMO: DEBUG: Sending frame 257
+259602: RefApp: DEMO: DEBUG: Sending frame 258
+260604: RefApp: DEMO: DEBUG: Sending frame 259
+261604: RefApp: DEMO: DEBUG: Sending frame 260
+262604: RefApp: DEMO: DEBUG: Sending frame 261
+263604: RefApp: DEMO: DEBUG: Sending frame 262
+264604: RefApp: DEMO: DEBUG: Sending frame 263
+265605: RefApp: DEMO: DEBUG: Sending frame 264
+266614: RefApp: DEMO: DEBUG: Sending frame 265
+267614: RefApp: DEMO: DEBUG: Sending frame 266
+268614: RefApp: DEMO: DEBUG: Sending frame 267
+269614: RefApp: DEMO: DEBUG: Sending frame 268
+270007: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+270007: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+270007: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+270007: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+270048: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+270614: RefApp: DEMO: DEBUG: Sending frame 269
+271614: RefApp: DEMO: DEBUG: Sending frame 270
+272615: RefApp: DEMO: DEBUG: Sending frame 271
+273618: RefApp: DEMO: DEBUG: Sending frame 272
+274624: RefApp: DEMO: DEBUG: Sending frame 273
+275624: RefApp: DEMO: DEBUG: Sending frame 274
+276625: RefApp: DEMO: DEBUG: Sending frame 275
+277627: RefApp: DEMO: DEBUG: Sending frame 276
+278634: RefApp: DEMO: DEBUG: Sending frame 277
+279634: RefApp: DEMO: DEBUG: Sending frame 278
+280636: RefApp: DEMO: DEBUG: Sending frame 279
+281641: RefApp: DEMO: DEBUG: Sending frame 280
+282644: RefApp: DEMO: DEBUG: Sending frame 281
+283645: RefApp: DEMO: DEBUG: Sending frame 282
+284654: RefApp: DEMO: DEBUG: Sending frame 283
+285654: RefApp: DEMO: DEBUG: Sending frame 284
+286654: RefApp: DEMO: DEBUG: Sending frame 285
+287654: RefApp: DEMO: DEBUG: Sending frame 286
+288654: RefApp: DEMO: DEBUG: Sending frame 287
+289654: RefApp: DEMO: DEBUG: Sending frame 288
+290654: RefApp: DEMO: DEBUG: Sending frame 289
+291654: RefApp: DEMO: DEBUG: Sending frame 290
+292654: RefApp: DEMO: DEBUG: Sending frame 291
+293654: RefApp: DEMO: DEBUG: Sending frame 292
+294654: RefApp: DEMO: DEBUG: Sending frame 293
+295655: RefApp: DEMO: DEBUG: Sending frame 294
+296664: RefApp: DEMO: DEBUG: Sending frame 295
+297664: RefApp: DEMO: DEBUG: Sending frame 296
+298664: RefApp: DEMO: DEBUG: Sending frame 297
+299664: RefApp: DEMO: DEBUG: Sending frame 298
+300009: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+300009: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+300009: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+300009: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+300010: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+300673: RefApp: DEMO: DEBUG: Sending frame 299
+301674: RefApp: DEMO: DEBUG: Sending frame 300
+302675: RefApp: DEMO: DEBUG: Sending frame 301
+303684: RefApp: DEMO: DEBUG: Sending frame 302
+304684: RefApp: DEMO: DEBUG: Sending frame 303
+305684: RefApp: DEMO: DEBUG: Sending frame 304
+306684: RefApp: DEMO: DEBUG: Sending frame 305
+307684: RefApp: DEMO: DEBUG: Sending frame 306
+308684: RefApp: DEMO: DEBUG: Sending frame 307
+309684: RefApp: DEMO: DEBUG: Sending frame 308
+310687: RefApp: DEMO: DEBUG: Sending frame 309
+311694: RefApp: DEMO: DEBUG: Sending frame 310
+312694: RefApp: DEMO: DEBUG: Sending frame 311
+313694: RefApp: DEMO: DEBUG: Sending frame 312
+314694: RefApp: DEMO: DEBUG: Sending frame 313
+315694: RefApp: DEMO: DEBUG: Sending frame 314
+316694: RefApp: DEMO: DEBUG: Sending frame 315
+317694: RefApp: DEMO: DEBUG: Sending frame 316
+318694: RefApp: DEMO: DEBUG: Sending frame 317
+319694: RefApp: DEMO: DEBUG: Sending frame 318
+320694: RefApp: DEMO: DEBUG: Sending frame 319
+321701: RefApp: DEMO: DEBUG: Sending frame 320
+322704: RefApp: DEMO: DEBUG: Sending frame 321
+323704: RefApp: DEMO: DEBUG: Sending frame 322
+324704: RefApp: DEMO: DEBUG: Sending frame 323
+325704: RefApp: DEMO: DEBUG: Sending frame 324
+326704: RefApp: DEMO: DEBUG: Sending frame 325
+327704: RefApp: DEMO: DEBUG: Sending frame 326
+328704: RefApp: DEMO: DEBUG: Sending frame 327
+329704: RefApp: DEMO: DEBUG: Sending frame 328
+330011: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+330011: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+330011: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+330011: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+330012: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+330704: RefApp: DEMO: DEBUG: Sending frame 329
+331704: RefApp: DEMO: DEBUG: Sending frame 330
+332706: RefApp: DEMO: DEBUG: Sending frame 331
+333714: RefApp: DEMO: DEBUG: Sending frame 332
+334714: RefApp: DEMO: DEBUG: Sending frame 333
+335714: RefApp: DEMO: DEBUG: Sending frame 334
+336714: RefApp: DEMO: DEBUG: Sending frame 335
+337714: RefApp: DEMO: DEBUG: Sending frame 336
+338714: RefApp: DEMO: DEBUG: Sending frame 337
+339714: RefApp: DEMO: DEBUG: Sending frame 338
+340714: RefApp: DEMO: DEBUG: Sending frame 339
+341714: RefApp: DEMO: DEBUG: Sending frame 340
+342714: RefApp: DEMO: DEBUG: Sending frame 341
+343714: RefApp: DEMO: DEBUG: Sending frame 342
+344714: RefApp: DEMO: DEBUG: Sending frame 343
+345715: RefApp: DEMO: DEBUG: Sending frame 344
+346724: RefApp: DEMO: DEBUG: Sending frame 345
+347724: RefApp: DEMO: DEBUG: Sending frame 346
+348724: RefApp: DEMO: DEBUG: Sending frame 347
+349726: RefApp: DEMO: DEBUG: Sending frame 348
+350734: RefApp: DEMO: DEBUG: Sending frame 349
+351734: RefApp: DEMO: DEBUG: Sending frame 350
+352734: RefApp: DEMO: DEBUG: Sending frame 351
+353734: RefApp: DEMO: DEBUG: Sending frame 352
+354734: RefApp: DEMO: DEBUG: Sending frame 353
+355734: RefApp: DEMO: DEBUG: Sending frame 354
+356734: RefApp: DEMO: DEBUG: Sending frame 355
+357734: RefApp: DEMO: DEBUG: Sending frame 356
+358734: RefApp: DEMO: DEBUG: Sending frame 357
+359734: RefApp: DEMO: DEBUG: Sending frame 358
+360013: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+360013: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+360013: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+360013: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+360014: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+360738: RefApp: DEMO: DEBUG: Sending frame 359
+361744: RefApp: DEMO: DEBUG: Sending frame 360
+362744: RefApp: DEMO: DEBUG: Sending frame 361
+363744: RefApp: DEMO: DEBUG: Sending frame 362
+364744: RefApp: DEMO: DEBUG: Sending frame 363
+365744: RefApp: DEMO: DEBUG: Sending frame 364
+366750: RefApp: DEMO: DEBUG: Sending frame 365
+367754: RefApp: DEMO: DEBUG: Sending frame 366
+368754: RefApp: DEMO: DEBUG: Sending frame 367
+369754: RefApp: DEMO: DEBUG: Sending frame 368
+370754: RefApp: DEMO: DEBUG: Sending frame 369
+371767: RefApp: DEMO: DEBUG: Sending frame 370
+372770: RefApp: DEMO: DEBUG: Sending frame 371
+373774: RefApp: DEMO: DEBUG: Sending frame 372
+374776: RefApp: DEMO: DEBUG: Sending frame 373
+375784: RefApp: DEMO: DEBUG: Sending frame 374
+376784: RefApp: DEMO: DEBUG: Sending frame 375
+377786: RefApp: DEMO: DEBUG: Sending frame 376
+378794: RefApp: DEMO: DEBUG: Sending frame 377
+379794: RefApp: DEMO: DEBUG: Sending frame 378
+380794: RefApp: DEMO: DEBUG: Sending frame 379
+381794: RefApp: DEMO: DEBUG: Sending frame 380
+382794: RefApp: DEMO: DEBUG: Sending frame 381
+383794: RefApp: DEMO: DEBUG: Sending frame 382
+384794: RefApp: DEMO: DEBUG: Sending frame 383
+385794: RefApp: DEMO: DEBUG: Sending frame 384
+386794: RefApp: DEMO: DEBUG: Sending frame 385
+387795: RefApp: DEMO: DEBUG: Sending frame 386
+388804: RefApp: DEMO: DEBUG: Sending frame 387
+389806: RefApp: DEMO: DEBUG: Sending frame 388
+390015: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+390015: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+390015: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+390015: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+390016: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+390814: RefApp: DEMO: DEBUG: Sending frame 389
+391814: RefApp: DEMO: DEBUG: Sending frame 390
+392814: RefApp: DEMO: DEBUG: Sending frame 391
+393814: RefApp: DEMO: DEBUG: Sending frame 392
+394815: RefApp: DEMO: DEBUG: Sending frame 393
+395818: RefApp: DEMO: DEBUG: Sending frame 394
+396824: RefApp: DEMO: DEBUG: Sending frame 395
+397824: RefApp: DEMO: DEBUG: Sending frame 396
+398830: RefApp: DEMO: DEBUG: Sending frame 397
+399834: RefApp: DEMO: DEBUG: Sending frame 398
+400834: RefApp: DEMO: DEBUG: Sending frame 399
+401834: RefApp: DEMO: DEBUG: Sending frame 400
+402834: RefApp: DEMO: DEBUG: Sending frame 401
+403834: RefApp: DEMO: DEBUG: Sending frame 402
+404834: RefApp: DEMO: DEBUG: Sending frame 403
+405834: RefApp: DEMO: DEBUG: Sending frame 404
+406834: RefApp: DEMO: DEBUG: Sending frame 405
+407837: RefApp: DEMO: DEBUG: Sending frame 406
+408844: RefApp: DEMO: DEBUG: Sending frame 407
+409844: RefApp: DEMO: DEBUG: Sending frame 408
+410844: RefApp: DEMO: DEBUG: Sending frame 409
+411844: RefApp: DEMO: DEBUG: Sending frame 410
+412844: RefApp: DEMO: DEBUG: Sending frame 411
+413844: RefApp: DEMO: DEBUG: Sending frame 412
+414844: RefApp: DEMO: DEBUG: Sending frame 413
+415844: RefApp: DEMO: DEBUG: Sending frame 414
+416844: RefApp: DEMO: DEBUG: Sending frame 415
+417844: RefApp: DEMO: DEBUG: Sending frame 416
+418844: RefApp: DEMO: DEBUG: Sending frame 417
+419844: RefApp: DEMO: DEBUG: Sending frame 418
+420017: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+420017: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+420017: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+420017: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+420018: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+420844: RefApp: DEMO: DEBUG: Sending frame 419
+421844: RefApp: DEMO: DEBUG: Sending frame 420
+422844: RefApp: DEMO: DEBUG: Sending frame 421
+423844: RefApp: DEMO: DEBUG: Sending frame 422
+424844: RefApp: DEMO: DEBUG: Sending frame 423
+425844: RefApp: DEMO: DEBUG: Sending frame 424
+426844: RefApp: DEMO: DEBUG: Sending frame 425
+427844: RefApp: DEMO: DEBUG: Sending frame 426
+428844: RefApp: DEMO: DEBUG: Sending frame 427
+429844: RefApp: DEMO: DEBUG: Sending frame 428
+430844: RefApp: DEMO: DEBUG: Sending frame 429
+431844: RefApp: DEMO: DEBUG: Sending frame 430
+432844: RefApp: DEMO: DEBUG: Sending frame 431
+433844: RefApp: DEMO: DEBUG: Sending frame 432
+434844: RefApp: DEMO: DEBUG: Sending frame 433
+435845: RefApp: DEMO: DEBUG: Sending frame 434
+436855: RefApp: DEMO: DEBUG: Sending frame 435
+437864: RefApp: DEMO: DEBUG: Sending frame 436
+438864: RefApp: DEMO: DEBUG: Sending frame 437
+439864: RefApp: DEMO: DEBUG: Sending frame 438
+440864: RefApp: DEMO: DEBUG: Sending frame 439
+441864: RefApp: DEMO: DEBUG: Sending frame 440
+442864: RefApp: DEMO: DEBUG: Sending frame 441
+443864: RefApp: DEMO: DEBUG: Sending frame 442
+444864: RefApp: DEMO: DEBUG: Sending frame 443
+445864: RefApp: DEMO: DEBUG: Sending frame 444
+446864: RefApp: DEMO: DEBUG: Sending frame 445
+447864: RefApp: DEMO: DEBUG: Sending frame 446
+448864: RefApp: DEMO: DEBUG: Sending frame 447
+449864: RefApp: DEMO: DEBUG: Sending frame 448
+450018: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa0808, 8) no data is pending!
+450018: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa0808 size:8 buffersize:2920
+450018: RefApp: [36mTCP[0m: DEBUG: LwipSocket::send(79aa05e8, 2) no data is pending!
+450018: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener() on 79aa0220 data:79aa05e8 size:2 buffersize:2912
+450019: RefApp: [36mTCP[0m: DEBUG: LwipSocket::tcpSentListener(79aa0220, 79ab60f0, 10);
+450865: RefApp: DEMO: DEBUG: Sending frame 449
+451875: RefApp: DEMO: DEBUG: Sending frame 450
+452884: RefApp: DEMO: DEBUG: Sending frame 451
+453884: RefApp: DEMO: DEBUG: Sending frame 452
+454884: RefApp: DEMO: DEBUG: Sending frame 453
+455884: RefApp: DEMO: DEBUG: Sending frame 454
+456884: RefApp: DEMO: DEBUG: Sending frame 455
+457884: RefApp: DEMO: DEBUG: Sending frame 456
+458884: RefApp: DEMO: DEBUG: Sending frame 457
+459884: RefApp: DEMO: DEBUG: Sending frame 458
+460884: RefApp: DEMO: DEBUG: Sending frame 459
+461884: RefApp: DEMO: DEBUG: Sending frame 460
+462884: RefApp: DEMO: DEBUG: Sending frame 461
